@@ -6,3 +6,12 @@ spring:
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:postgres}
     driverClassName: org.postgresql.Driver
+  liquibase:
+    enabled: true
+    drop-first: false
+    change-log: classpath:db.changelog-master.xml
+    default-schema: public
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
