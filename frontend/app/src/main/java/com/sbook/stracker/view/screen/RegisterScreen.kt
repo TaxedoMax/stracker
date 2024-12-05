@@ -19,19 +19,23 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.sbook.stracker.repository.mock.InMemoryUserRepository
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
+import com.sbook.stracker.entity.User
 import com.sbook.stracker.ui.theme.STrackerTheme
 import com.sbook.stracker.viewmodel.AuthViewModel
+import com.sbook.stracker.viewmodel.UserViewModel
 
 @Composable
 fun RegistrationScreen(
-    onLoginClick: () -> Unit,
-    onRegisterSuccess: () -> Unit
+    navController: NavHostController,
+    userViewModel: UserViewModel
 ) {
-    val viewModel : AuthViewModel = hiltViewModel()
-    val login = viewModel.login
-    val password = viewModel.password
-    val errorMessage = viewModel.errorMessage
+    val authViewModel : AuthViewModel = hiltViewModel()
+
+    val login = authViewModel.login
+    val password = authViewModel.password
+    val errorMessage = authViewModel.errorMessage
 
     Column(
         modifier = Modifier
@@ -47,7 +51,7 @@ fun RegistrationScreen(
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
             value = login,
-            onValueChange = { viewModel.onLoginChanged(it) },
+            onValueChange = { authViewModel.onLoginChanged(it) },
             label = { Text("Логин") },
             singleLine = true
         )
@@ -55,14 +59,14 @@ fun RegistrationScreen(
         Spacer(modifier = Modifier.height(16.dp))
         TextField(
             value = password,
-            onValueChange = { viewModel.onPasswordChanged(it) },
+            onValueChange = { authViewModel.onPasswordChanged(it) },
             label = { Text("Пароль") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { viewModel.registerUser(onRegisterSuccess, { viewModel.errorMessage }) }) {
+        Button(onClick = { authViewModel.registerUser(userViewModel, navController) }) {
             Text(text = "Зарегистрироваться")
         }
 
@@ -72,7 +76,7 @@ fun RegistrationScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        TextButton(onClick = onLoginClick) {
+        TextButton(onClick = { navController.navigate("login") }) {
             Text(text = "Уже есть аккаунт? Войти")
         }
     }
@@ -82,9 +86,6 @@ fun RegistrationScreen(
 @Composable
 fun PreviewRegisterScreen(){
     STrackerTheme {
-        RegistrationScreen(
-            //viewModel = AuthViewModel(userRepository = InMemoryUserRepository()),
-            onLoginClick = { /*TODO*/ }
-        ) {}
+        RegistrationScreen(rememberNavController(), hiltViewModel())
     }
 }

@@ -7,6 +7,7 @@ import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.TaskRepository
 import com.sbook.stracker.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dagger.hilt.android.scopes.ActivityScoped
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -18,29 +19,36 @@ class UserViewModel @Inject constructor(
     private val taskRepository: TaskRepository
 ) : ViewModel() {
 
+    private var _userId: String = "-1"
+    val userId: String get() = _userId
+
     private val _user = MutableStateFlow<User?>(null)
     val user: StateFlow<User?> get() = _user
 
     private val _userTasks = MutableStateFlow<List<Task>>(emptyList())
     val userTasks: StateFlow<List<Task>> get() = _userTasks
 
-    fun loadUser(userId: String) {
-        viewModelScope.launch {
-            _user.value = userRepository.getUserById(userId)
-        }
+    fun setUserId(id: String){
+        _userId = id
     }
 
-    fun loadUserTasks(userId: String) {
-        viewModelScope.launch {
-            _userTasks.value = taskRepository.getTasksByUserId(userId)
-        }
-    }
-
-    fun getUser(userId: String): User? {
+//    fun loadUser(userId: String) {
+//        viewModelScope.launch {
+//            _user.value = userRepository.getUserById(userId)
+//        }
+//    }
+//
+//    fun loadUserTasks(userId: String) {
+//        viewModelScope.launch {
+//            _userTasks.value = taskRepository.getTasksByUserId(userId)
+//        }
+//    }
+//
+    fun getUser(): User? {
         return userRepository.getUserById(userId)
     }
 
-    fun getUserTasks(userId: String): List<Task> {
+    fun getUserTasks(): List<Task> {
         return taskRepository.getTasksByUserId(userId)
     }
 }

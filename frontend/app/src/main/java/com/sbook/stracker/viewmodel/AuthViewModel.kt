@@ -3,8 +3,8 @@ package com.sbook.stracker.viewmodel
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
+import androidx.navigation.NavHostController
 import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +15,6 @@ import javax.inject.Inject
 class AuthViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
-
     var login by mutableStateOf("")
         private set
     var password by mutableStateOf("")
@@ -31,24 +30,27 @@ class AuthViewModel @Inject constructor(
         password = newPassword
     }
 
-    fun loginUser(onSuccess: () -> Unit, onError: (String) -> Unit) {
-        val user = userRepository.getUserByLogin(login)
-        if (user != null && user.password == password) {
-            onSuccess()
+    fun loginUser(userViewModel: UserViewModel, navController: NavHostController) {
+        val user = User(id = "-1", login = login, password = password)
+
+        val userId = userRepository.login(user)
+        if (userId != "-1") {
+            userViewModel.setUserId(userId)
+            navController.navigate("teams")
         } else {
             errorMessage = "Неверный логин или пароль"
-            onError(errorMessage)
         }
     }
 
-    fun registerUser(onSuccess: () -> Unit, onError: (String) -> Unit) {
-        if (userRepository.getUserByLogin(login) != null) {
-            errorMessage = "Пользователь уже существует"
-            onError(errorMessage)
+    fun registerUser(userViewModel: UserViewModel, navController: NavHostController) {
+        val newUser = User(id = "-1", login = login, password = password)
+        val userId = userRepository.registerUser(newUser)
+
+        if (userId != "-1") {
+            userViewModel.setUserId(userId)
+            navController.navigate("teams")
         } else {
-            val newUser = User(id = "1", login = login, password = password)
-            userRepository.addUser(newUser)
-            onSuccess()
+            errorMessage = "Пользователь уже существует"
         }
     }
 }

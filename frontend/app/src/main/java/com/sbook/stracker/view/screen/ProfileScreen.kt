@@ -17,10 +17,12 @@ import com.sbook.stracker.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(navController: NavController, userId: String) {
-    val viewModel: UserViewModel = hiltViewModel()
-    val user = viewModel.getUser(userId) // Получаем данные пользователя
-    val userTasks = viewModel.getUserTasks(userId) // Получаем задачи пользователя
+fun ProfileScreen(
+    navController: NavController,
+    userViewModel: UserViewModel
+) {
+    val user = userViewModel.getUser() // Получаем данные пользователя
+    val userTasks = userViewModel.getUserTasks() // Получаем задачи пользователя
 
     Scaffold(
         topBar = {

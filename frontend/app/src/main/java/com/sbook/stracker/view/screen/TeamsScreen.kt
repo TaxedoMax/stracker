@@ -10,16 +10,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.sbook.stracker.viewmodel.UserViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeamsScreen(navController: NavController) {
+fun TeamsScreen(
+    navController: NavController,
+    userViewModel: UserViewModel
+) {
     val teams = listOf("Команда 1", "Команда 2") // Временно, замените реальными данными
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Команды") },
+                title = { Text("Ваши команды") },
                 actions = {
                     IconButton(onClick = { navController.navigate("profile")}) {
                         Icon(
@@ -46,7 +50,7 @@ fun TeamsScreen(navController: NavController) {
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { /* TODO: Открыть экран создания команды */ },
+                onClick = { navController.navigate("create_team") },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Создать новую команду")

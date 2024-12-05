@@ -14,8 +14,14 @@ class InMemoryUserRepository : UserRepository {
 
     override fun getUserByLogin(login: String): User? = users.find { it.login == login }
 
-    override fun addUser(user: User): Boolean {
-        return users.add(user)
+    override fun registerUser(user: User): String {
+        var newUserId = "-1"
+        if(getUserByLogin(user.login) == null){
+            val newUser = user.copy(id = users.size.toString())
+            users.add(newUser)
+            newUserId = newUser.id
+        }
+        return newUserId
     }
 
     override fun updateUser(user: User): Boolean {
@@ -23,5 +29,11 @@ class InMemoryUserRepository : UserRepository {
         if (index == -1) return false
         users[index] = user
         return true
+    }
+
+    override fun login(user: User): String {
+        val existingUser = getUserByLogin(user.login)
+        return if(existingUser == null || user.password != existingUser.password) "-1"
+        else existingUser.id
     }
 }

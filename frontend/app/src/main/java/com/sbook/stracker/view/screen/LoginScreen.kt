@@ -21,20 +21,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.sbook.stracker.R
-import com.sbook.stracker.repository.mock.InMemoryUserRepository
 import com.sbook.stracker.ui.theme.STrackerTheme
 import com.sbook.stracker.viewmodel.AuthViewModel
+import com.sbook.stracker.viewmodel.UserViewModel
 
 @Composable
 fun LoginScreen(
-    onRegisterClick: () -> Unit,
-    onLoginSuccess: () -> Unit
+    navController: NavHostController,
+    userViewModel: UserViewModel
 ) {
-    val viewModel: AuthViewModel = hiltViewModel()
-    val login = viewModel.login
-    val password = viewModel.password
-    val errorMessage = viewModel.errorMessage
+    val authViewModel: AuthViewModel = hiltViewModel()
+    val login = authViewModel.login
+    val password = authViewModel.password
+    val errorMessage = authViewModel.errorMessage
 
     Column(
         modifier = Modifier
@@ -57,7 +59,7 @@ fun LoginScreen(
 
         TextField(
             value = login,
-            onValueChange = { viewModel.onLoginChanged(it) },
+            onValueChange = { authViewModel.onLoginChanged(it) },
             label = { Text("Логин") },
             singleLine = true
         )
@@ -66,7 +68,7 @@ fun LoginScreen(
 
         TextField(
             value = password,
-            onValueChange = { viewModel.onPasswordChanged(it) },
+            onValueChange = { authViewModel.onPasswordChanged(it) },
             label = { Text("Пароль") },
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
@@ -74,7 +76,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { viewModel.loginUser(onLoginSuccess) { viewModel.errorMessage } }) {
+        Button(onClick = { authViewModel.loginUser(userViewModel, navController) }) {
             Text(text = "Войти")
         }
 
@@ -84,7 +86,7 @@ fun LoginScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        TextButton(onClick = onRegisterClick) {
+        TextButton(onClick = { navController.navigate("register") }) {
             Text(text = "Нет аккаунта? Зарегистрироваться")
         }
     }
@@ -94,9 +96,6 @@ fun LoginScreen(
 @Composable
 fun PreviewLoginScreen(){
     STrackerTheme {
-        LoginScreen(
-            //viewModel = AuthViewModel(userRepository = InMemoryUserRepository()),
-            onRegisterClick = { /*TODO*/ }
-        ) {}
+        LoginScreen(navController = rememberNavController(), hiltViewModel())
     }
 }
