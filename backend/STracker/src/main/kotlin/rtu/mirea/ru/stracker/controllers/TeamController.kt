@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
 import rtu.mirea.ru.stracker.DTO.team.*
+import rtu.mirea.ru.stracker.DTO.team.GetTeamRequest
 import rtu.mirea.ru.stracker.services.TeamService
 
 @RestController
@@ -34,5 +35,13 @@ class TeamController(
         } catch (e: Exception){
             throw ResponseStatusException(HttpStatus.BAD_REQUEST,e.message)
         }
+    }
+
+    @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
+    fun getTeams(
+        @RequestBody request: GetTeamRequest
+    ): GetTeamResponse {
+        return teamService.getTeam(request)
     }
 }

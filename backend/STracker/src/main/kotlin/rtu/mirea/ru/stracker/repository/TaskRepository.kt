@@ -5,4 +5,6 @@ import org.springframework.stereotype.Repository
 import rtu.mirea.ru.stracker.entity.Task
 
 @Repository
-interface TaskRepository : JpaRepository<Task, Long>
+interface TaskRepository : JpaRepository<Task, Long>{
+    fun findAllByTeamId(teamId: Long): List<Task>
+}

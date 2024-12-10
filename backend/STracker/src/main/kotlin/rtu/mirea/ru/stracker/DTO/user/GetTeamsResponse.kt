@@ -1,4 +1,4 @@
-package rtu.mirea.ru.stracker.DTO.team
+package rtu.mirea.ru.stracker.DTO.user
 
 data class GetTeamsResponse (
     val teams: List<TeamsPreview>,

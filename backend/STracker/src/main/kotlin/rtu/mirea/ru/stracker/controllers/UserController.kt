@@ -3,7 +3,7 @@ package rtu.mirea.ru.stracker.controllers
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
-import rtu.mirea.ru.stracker.DTO.team.GetTeamsResponse
+import rtu.mirea.ru.stracker.DTO.user.GetTeamsResponse
 import rtu.mirea.ru.stracker.DTO.user.CreateUserRequest
 import rtu.mirea.ru.stracker.DTO.user.CreateUserResponse
 import rtu.mirea.ru.stracker.services.TeamService

@@ -3,18 +3,23 @@ package rtu.mirea.ru.stracker.services
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import rtu.mirea.ru.stracker.DTO.team.*
+import rtu.mirea.ru.stracker.DTO.team.GetTeamRequest
+import rtu.mirea.ru.stracker.DTO.user.GetTeamsResponse
+import rtu.mirea.ru.stracker.DTO.user.TeamsPreview
 import rtu.mirea.ru.stracker.entity.Team
 import rtu.mirea.ru.stracker.entity.TeamStatus
 import rtu.mirea.ru.stracker.entity.UserTeam
+import rtu.mirea.ru.stracker.repository.TaskRepository
 import rtu.mirea.ru.stracker.repository.TeamRepository
 import rtu.mirea.ru.stracker.repository.UserRepository
 import rtu.mirea.ru.stracker.repository.UserTeamRepository
 
 @Service("TeamService")
 class TeamService(
-    val teamRepository : TeamRepository,
-    val userTeamRepository: UserTeamRepository,
-    val userRepository: UserRepository,
+    private val teamRepository: TeamRepository,
+    private val userTeamRepository: UserTeamRepository,
+    private val userRepository: UserRepository,
+    private val taskRepository: TaskRepository,
 ) {
     @Transactional
     fun createTeam(
@@ -95,5 +100,39 @@ class TeamService(
                 )
             }
         )
+    }
+
+    fun getTeam(request: GetTeamRequest): GetTeamResponse {
+        if (!userTeamRepository.existsUserTeamsByUserIdAndTeamId(request.userId, request.teamId)) {
+            throw IllegalArgumentException("У данного пользователя нет доступа к данной команде")
+        }
+        val tasks = taskRepository.findAllByTeamId(request.teamId)
+        val team = teamRepository.findById(request.teamId).get()
+
+        return GetTeamResponse(
+            id = request.teamId,
+            name = team.name,
+            photo = team.photo,
+            leadId = team.leadId,
+            description = team.description,
+            status = team.status,
+            tasks = tasks.map { task ->
+                TaskInTeam(
+                    id = task.id,
+                    name = task.name,
+                    description = task.description,
+                    status = task.status.toString(),
+                    type = task.type.toString(),
+                    authorId = task.authorId,
+                    executorLogin = if (task.executorId != null) takeLoginById(task.executorId) else null,
+                    teamId = task.teamId,
+                )
+            },
+            isUserLeader = isUserLeadOfTeam(request.teamId, request.userId),
+        )
+    }
+
+    private fun takeLoginById(userId: Long): String {
+        return userRepository.findById(userId).get().login
     }
 }
