@@ -2,8 +2,9 @@ package rtu.mirea.ru.stracker.controllers
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import rtu.mirea.ru.stracker.DTO.CreateUserDto
-import rtu.mirea.ru.stracker.DTO.UserDto
+import org.springframework.web.server.ResponseStatusException
+import rtu.mirea.ru.stracker.DTO.user.CreateUserRequest
+import rtu.mirea.ru.stracker.DTO.user.CreateUserResponse
 import rtu.mirea.ru.stracker.services.UserService
 
 @RestController
@@ -14,8 +15,24 @@ class UserController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun addUser(
-        @RequestBody createUserDto: CreateUserDto
-    ): UserDto{
-        return userService.createUser(createUserDto)
+        @RequestBody createUserRequest: CreateUserRequest
+    ): CreateUserResponse {
+        try {
+            return userService.createUser(createUserRequest)
+        } catch (e: Exception) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+        }
+    }
+
+    @GetMapping("/check/{login}")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun checkUser(
+        @PathVariable login: String
+    ): Boolean {
+        try {
+            return userService.isUserExist(login)
+        } catch (e: Exception){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST,e.message)
+        }
     }
 }

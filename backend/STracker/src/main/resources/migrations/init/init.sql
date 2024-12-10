@@ -1,7 +1,7 @@
 -- Создание таблицы users
 CREATE TABLE users (
                        id BIGSERIAL PRIMARY KEY,
-                       login VARCHAR(255) NOT NULL,
+                       login VARCHAR(255) NOT NULL UNIQUE,
                        photo TEXT
 );
 

@@ -5,20 +5,20 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "tasks")
 class Task(
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    val id: Long,
-    val name: String,
-    val status: TaskStatus,
-    val type: String,
-    val description: String,
+    val name: String = "name",
+    val status: TaskStatus = TaskStatus.OPEN,
+    val type: TaskType = TaskType.TASK,
+    val description: String? = null,
     @Column(name = "author_id")
-    val authorId: Long,
+    val authorId: Long = 0,
     @Column(name = "executor_id")
-    val executorId: Long,
+    val executorId: Long? = null,
     @Column(name = "team_id")
-    val teamId: Long,
+    val teamId: Long = 0,
 ){
-    constructor() : this(0, "", TaskStatus.OPEN, "", "", 0, 0, 0)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    val id: Long = 0
 }
 
 enum class TaskStatus {
@@ -27,4 +27,11 @@ enum class TaskStatus {
     IN_PROGRESS,
     NEED_INFORMATION,
     ON_CHECK,
+}
+
+enum class TaskType {
+    HANDMADE,
+    BUYING,
+    CREATION,
+    TASK,
 }
