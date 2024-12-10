@@ -3,14 +3,17 @@ package rtu.mirea.ru.stracker.controllers
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.web.server.ResponseStatusException
+import rtu.mirea.ru.stracker.DTO.team.GetTeamsResponse
 import rtu.mirea.ru.stracker.DTO.user.CreateUserRequest
 import rtu.mirea.ru.stracker.DTO.user.CreateUserResponse
+import rtu.mirea.ru.stracker.services.TeamService
 import rtu.mirea.ru.stracker.services.UserService
 
 @RestController
 @RequestMapping("/v1/user")
 class UserController(
-    val userService: UserService
+    val userService: UserService,
+    val teamService: TeamService,
 ) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -34,5 +37,13 @@ class UserController(
         } catch (e: Exception){
             throw ResponseStatusException(HttpStatus.BAD_REQUEST,e.message)
         }
+    }
+
+    @GetMapping("team/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    fun getTeams(
+        @PathVariable id: Long
+    ): GetTeamsResponse {
+        return teamService.getTeams(id)
     }
 }

@@ -7,4 +7,6 @@ import rtu.mirea.ru.stracker.entity.UserTeam
 import rtu.mirea.ru.stracker.entity.UserTeamId
 
 @Repository
-interface UserTeamRepository : JpaRepository<UserTeam, UserTeamId>
+interface UserTeamRepository : JpaRepository<UserTeam, UserTeamId>{
+    fun findAllByUserId(userId: Long): List<UserTeam>
+}

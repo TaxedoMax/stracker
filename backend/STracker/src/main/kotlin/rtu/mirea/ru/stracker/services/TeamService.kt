@@ -2,10 +2,7 @@ package rtu.mirea.ru.stracker.services
 
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
-import rtu.mirea.ru.stracker.DTO.team.AddUserRequest
-import rtu.mirea.ru.stracker.DTO.team.AddUserResponse
-import rtu.mirea.ru.stracker.DTO.team.CreateTeamRequest
-import rtu.mirea.ru.stracker.DTO.team.CreateTeamResponse
+import rtu.mirea.ru.stracker.DTO.team.*
 import rtu.mirea.ru.stracker.entity.Team
 import rtu.mirea.ru.stracker.entity.TeamStatus
 import rtu.mirea.ru.stracker.entity.UserTeam
@@ -78,5 +75,25 @@ class TeamService(
     fun isUserLeadOfTeam(teamId: Long, userId: Long): Boolean {
         val team = teamRepository.findByIdAndLeadId(teamId, userId)
         return team != null
+    }
+
+    fun getTeams(id: Long): GetTeamsResponse {
+        if (userRepository.findById(id).isEmpty) {
+            throw IllegalArgumentException("Пользователь не найден")
+        }
+        val teamIds = userTeamRepository.findAllByUserId(id)
+
+        return GetTeamsResponse(
+            teams = teamIds.map { teamId ->
+                val team = teamRepository.findById(teamId.teamId).get()
+                TeamsPreview(
+                    id = team.id,
+                    description = team.description,
+                    photo = team.photo,
+                    name = team.name,
+                    isLeader = isUserLeadOfTeam(team.id, id),
+                )
+            }
+        )
     }
 }
