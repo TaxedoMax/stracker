@@ -1,6 +1,8 @@
 package com.sbook.stracker
 
+import android.app.Activity
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -11,10 +13,16 @@ import com.sbook.stracker.view.screen.RegistrationScreen
 import com.sbook.stracker.view.screen.TeamCreationScreen
 import com.sbook.stracker.view.screen.TeamsScreen
 import com.sbook.stracker.viewmodel.UserViewModel
+import dagger.hilt.android.EntryPointAccessors
 
 @Composable
 fun MainNavHost(navController: NavHostController){
     val userViewModel: UserViewModel = hiltViewModel()
+    val factoryProvider = EntryPointAccessors.fromActivity(
+        LocalContext.current as Activity,
+        ViewModelFactoryProvider::class.java
+    )
+
     NavHost(navController = navController, startDestination = "login"){
         composable("login"){
             LoginScreen(
@@ -29,9 +37,10 @@ fun MainNavHost(navController: NavHostController){
                 )
         }
         composable("teams") {
+            val teamViewModel = factoryProvider.teamViewModelFactory().create(userViewModel.userId)
             TeamsScreen(
                 navController = navController,
-                userViewModel = userViewModel
+                teamViewModel = teamViewModel
                 )
         }
         composable("profile") {
@@ -49,7 +58,13 @@ fun MainNavHost(navController: NavHostController){
             /* TODO: TaskDetailsScreen(navController, taskId) */
         }
         composable("create_task") { /* TODO: CreateTaskScreen(navController) */ }
-        composable("create_team"){ TeamCreationScreen(navController = navController) }
+        composable("create_team"){
+            TeamCreationScreen(
+                navController = navController,
+                editViewModel = factoryProvider.teamEditViewModelFactory()
+                    .create(userViewModel.userId, null)
+                )
+        }
         composable("team_settings/{teamId}") { backStackEntry ->
             val teamId = backStackEntry.arguments?.getString("teamId") ?: ""
             /* TODO: TeamSettingsScreen(navController, teamId) */

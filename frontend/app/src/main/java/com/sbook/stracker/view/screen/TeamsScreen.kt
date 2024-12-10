@@ -7,18 +7,23 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.sbook.stracker.viewmodel.UserViewModel
+import com.sbook.stracker.entity.Team
+import com.sbook.stracker.viewmodel.TeamViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeamsScreen(
     navController: NavController,
-    userViewModel: UserViewModel
+    teamViewModel: TeamViewModel
 ) {
-    val teams = listOf("Команда 1", "Команда 2") // Временно, замените реальными данными
+    val teams by teamViewModel.userTeams
+    val isDataLoading by teamViewModel.isDataLoading
 
     Scaffold(
         topBar = {
@@ -39,11 +44,27 @@ fun TeamsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            LazyColumn(modifier = Modifier.weight(1f)) {
-                items(teams) { team ->
-                    TeamItem(teamName = team)
+            Box(
+                modifier = Modifier.weight(1F),
+                contentAlignment = Alignment.Center,
+            ){
+                if(!isDataLoading) {
+                    LazyColumn(modifier = Modifier.align(Alignment.TopCenter)) {
+                        items(teams) { team ->
+                            TeamItem(team = team)
+                        }
+                    }
+                } else{
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center),
+                        color = ProgressIndicatorDefaults.circularColor,
+                        strokeWidth = ProgressIndicatorDefaults.CircularStrokeWidth,
+                        trackColor = ProgressIndicatorDefaults.circularDeterminateTrackColor,
+                        strokeCap = ProgressIndicatorDefaults.CircularIndeterminateStrokeCap
+                    )
                 }
             }
 
@@ -60,14 +81,14 @@ fun TeamsScreen(
 }
 
 @Composable
-fun TeamItem(teamName: String) {
+fun TeamItem(team: Team) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
     ) {
         Text(
-            text = teamName,
+            text = team.name,
             modifier = Modifier.padding(16.dp),
             style = MaterialTheme.typography.bodyLarge
         )

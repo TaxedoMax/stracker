@@ -1,9 +1,13 @@
 package com.sbook.stracker.repository.mock
 
+import com.sbook.stracker.dto.AuthDTO
 import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.UserRepository
+import javax.inject.Inject
 
 class InMemoryUserRepository : UserRepository {
+    @Inject
+    lateinit var teamRepository: InMemoryTeamRepository
     private val users = mutableListOf(
         User(id = "1", login = "user1", password = "password1"),
         User(id = "2", login = "user2", password = "password2"),
@@ -14,14 +18,26 @@ class InMemoryUserRepository : UserRepository {
 
     override fun getUserByLogin(login: String): User? = users.find { it.login == login }
 
-    override fun registerUser(user: User): String {
-        var newUserId = "-1"
-        if(getUserByLogin(user.login) == null){
-            val newUser = user.copy(id = users.size.toString())
-            users.add(newUser)
-            newUserId = newUser.id
+    override fun getUsersByTeam(id: String): List<User> {
+        return teamRepository.getUsersByTeam(id).map{ userId ->
+            users.find {user ->
+                user.id == userId
+            }!!
         }
-        return newUserId
+    }
+
+    override fun registerUser(authDTO: AuthDTO): String {
+        var userId = "-1"
+        if(getUserByLogin(authDTO.login) == null){
+            val newUser = User(
+                id = (users.size + 1).toString(),
+                login = authDTO.login,
+                password = authDTO.password,
+            )
+            users.add(newUser)
+            userId = newUser.id
+        }
+        return userId
     }
 
     override fun updateUser(user: User): Boolean {
@@ -31,9 +47,9 @@ class InMemoryUserRepository : UserRepository {
         return true
     }
 
-    override fun login(user: User): String {
-        val existingUser = getUserByLogin(user.login)
-        return if(existingUser == null || user.password != existingUser.password) "-1"
+    override fun login(authDTO: AuthDTO): String {
+        val existingUser = getUserByLogin(authDTO.login)
+        return if(existingUser == null || authDTO.password != existingUser.password) "-1"
         else existingUser.id
     }
 }

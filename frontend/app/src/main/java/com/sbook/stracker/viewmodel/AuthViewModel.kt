@@ -5,10 +5,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
-import com.sbook.stracker.entity.User
+import com.sbook.stracker.dto.AuthDTO
 import com.sbook.stracker.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.scopes.ActivityScoped
 import javax.inject.Inject
 
 @HiltViewModel
@@ -31,9 +30,9 @@ class AuthViewModel @Inject constructor(
     }
 
     fun loginUser(userViewModel: UserViewModel, navController: NavHostController) {
-        val user = User(id = "-1", login = login, password = password)
+        val authDTO = AuthDTO(login = login, password = password)
 
-        val userId = userRepository.login(user)
+        val userId = userRepository.login(authDTO)
         if (userId != "-1") {
             userViewModel.setUserId(userId)
             navController.navigate("teams")
@@ -43,8 +42,8 @@ class AuthViewModel @Inject constructor(
     }
 
     fun registerUser(userViewModel: UserViewModel, navController: NavHostController) {
-        val newUser = User(id = "-1", login = login, password = password)
-        val userId = userRepository.registerUser(newUser)
+        val authDTO = AuthDTO(login = login, password = password)
+        val userId = userRepository.registerUser(authDTO)
 
         if (userId != "-1") {
             userViewModel.setUserId(userId)

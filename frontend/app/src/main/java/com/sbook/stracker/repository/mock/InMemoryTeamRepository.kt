@@ -1,41 +1,66 @@
 package com.sbook.stracker.repository.mock
 
+import com.sbook.stracker.dto.team.CreateTeamDTO
 import com.sbook.stracker.entity.Team
+import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.TeamRepository
+import kotlinx.coroutines.delay
 
 class InMemoryTeamRepository : TeamRepository {
+
     private val teams = mutableListOf(
         Team(
             id = "1",
             name = "Team Alpha",
-            usersIds = listOf("1", "2"),
-            adminIds = listOf("1"),
-            tasksIds = listOf("1", "2")
+            adminId = "1"
         ),
         Team(
             id = "2",
             name = "Team Beta",
-            usersIds = listOf("2", "3"),
-            adminIds = listOf("2"),
-            tasksIds = listOf("3", "4", "5")
+            adminId = "2"
         )
     )
 
-    override fun getAllTeams(): List<Team> = teams
+    private val teamUsers: MutableMap<String, MutableList<String>> = mutableMapOf(
+        "1" to mutableListOf("1", "2"),
+        "2" to mutableListOf("2", "3"),
+    )
+
+    fun getUsersByTeam(teamId: String): List<String> {
+        return teamUsers[teamId] ?: emptyList()
+    }
 
     override fun getTeamById(id: String): Team? = teams.find { it.id == id }
-    override fun getTeamsByUserId(id: String): List<Team> {
-        return teams.filter { it.usersIds.contains(id) }
+    override suspend fun getTeamsByUserId(id: String): List<Team> {
+        delay(500)
+
+        val tmpTeams: ArrayList<String> = arrayListOf()
+        teamUsers.forEach {
+            if(it.value.contains(id)) tmpTeams.add(it.key)
+        }
+
+        return teams.filter {tmpTeams.contains(it.id)}
     }
 
-    override fun addTeam(team: Team): Boolean {
-        return teams.add(team)
+    override fun createTeam(createTeamDTO: CreateTeamDTO): Boolean {
+        val id = (teams.size + 1).toString()
+        val newTeam = Team(
+            id = id,
+            name = createTeamDTO.name,
+            adminId = createTeamDTO.adminId,
+        )
+
+        teamUsers[id] = createTeamDTO.usersIdsList.toMutableList()
+        return teams.add(newTeam)
     }
 
-    override fun updateTeam(team: Team): Boolean {
+    override fun updateTeam(team: Team, userIdsList: List<String>): Boolean {
         val index = teams.indexOfFirst { it.id == team.id }
         if (index == -1) return false
         teams[index] = team
+
+        teamUsers[team.id]?.clear()
+        teamUsers[team.id]?.addAll(userIdsList)
         return true
     }
 
