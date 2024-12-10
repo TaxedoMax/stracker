@@ -3,11 +3,12 @@ package com.sbook.stracker.repository.mock
 import com.sbook.stracker.dto.AuthDTO
 import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.UserRepository
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+class InMemoryUserRepository @Inject constructor(
+        private val teamRepository: InMemoryTeamRepository,
+    ) : UserRepository {
 
-class InMemoryUserRepository : UserRepository {
-    @Inject
-    lateinit var teamRepository: InMemoryTeamRepository
     private val users = mutableListOf(
         User(id = "1", login = "user1", password = "password1"),
         User(id = "2", login = "user2", password = "password2"),
@@ -18,8 +19,8 @@ class InMemoryUserRepository : UserRepository {
 
     override fun getUserByLogin(login: String): User? = users.find { it.login == login }
 
-    override fun getUsersByTeam(id: String): List<User> {
-        return teamRepository.getUsersByTeam(id).map{ userId ->
+    override fun getUsersByTeam(teamId: String): List<User> {
+        return teamRepository.getUsersByTeam(teamId).map{ userId ->
             users.find {user ->
                 user.id == userId
             }!!

@@ -30,8 +30,8 @@ interface ViewModelFactoryProvider{
 class UserModule {
     @Provides
     @Singleton
-    fun provideInMemoryUserRepository(): InMemoryUserRepository {
-        return InMemoryUserRepository()
+    fun provideInMemoryUserRepository(inMemoryTeamRepository: InMemoryTeamRepository): InMemoryUserRepository {
+        return InMemoryUserRepository(inMemoryTeamRepository)
     }
 }
 

@@ -4,6 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
+import com.sbook.stracker.dto.team.TeamForUserDTO
 import com.sbook.stracker.entity.Team
 import com.sbook.stracker.repository.TeamRepository
 import dagger.assisted.Assisted
@@ -18,7 +19,7 @@ class TeamViewModel @AssistedInject constructor(
 ) : ViewModel() {
 
     private val _isDataLoading = mutableStateOf(false)
-    private val _userTeams = mutableStateOf<List<Team>>(emptyList())
+    private val _userTeams = mutableStateOf<List<TeamForUserDTO>>(emptyList())
     val userTeams get() = _userTeams
     val isDataLoading get() = _isDataLoading
 

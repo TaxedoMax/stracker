@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -13,6 +14,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import com.sbook.stracker.dto.team.TeamForUserDTO
 import com.sbook.stracker.entity.Team
 import com.sbook.stracker.viewmodel.TeamViewModel
 
@@ -54,7 +57,7 @@ fun TeamsScreen(
                 if(!isDataLoading) {
                     LazyColumn(modifier = Modifier.align(Alignment.TopCenter)) {
                         items(teams) { team ->
-                            TeamItem(team = team)
+                            TeamItem(team = team, navController = navController)
                         }
                     }
                 } else{
@@ -81,16 +84,28 @@ fun TeamsScreen(
 }
 
 @Composable
-fun TeamItem(team: Team) {
+fun TeamItem(team: TeamForUserDTO, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp),
     ) {
-        Text(
-            text = team.name,
-            modifier = Modifier.padding(16.dp),
-            style = MaterialTheme.typography.bodyLarge
-        )
+        Row {
+            Text(
+                text = team.name,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .weight(1F),
+                style = MaterialTheme.typography.bodyLarge
+            )
+            if(team.isOwner){
+                IconButton(onClick = { navController.navigate("team/${team.id}/edit") }) {
+                    Icon(
+                        imageVector = Icons.Default.Edit,
+                        contentDescription = "Редактировать"
+                    )
+                }
+            }
+        }
     }
 }

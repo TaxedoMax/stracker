@@ -1,6 +1,8 @@
 package com.sbook.stracker.repository.mock
 
 import com.sbook.stracker.dto.team.CreateTeamDTO
+import com.sbook.stracker.dto.team.EditTeamDTO
+import com.sbook.stracker.dto.team.TeamForUserDTO
 import com.sbook.stracker.entity.Team
 import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.TeamRepository
@@ -31,7 +33,7 @@ class InMemoryTeamRepository : TeamRepository {
     }
 
     override fun getTeamById(id: String): Team? = teams.find { it.id == id }
-    override suspend fun getTeamsByUserId(id: String): List<Team> {
+    override suspend fun getTeamsByUserId(id: String): List<TeamForUserDTO> {
         delay(500)
 
         val tmpTeams: ArrayList<String> = arrayListOf()
@@ -40,6 +42,13 @@ class InMemoryTeamRepository : TeamRepository {
         }
 
         return teams.filter {tmpTeams.contains(it.id)}
+            .map{team ->
+                TeamForUserDTO(
+                    id = team.id,
+                    name = team.name,
+                    isOwner = team.adminId == id
+                )
+            }
     }
 
     override fun createTeam(createTeamDTO: CreateTeamDTO): Boolean {
@@ -54,13 +63,12 @@ class InMemoryTeamRepository : TeamRepository {
         return teams.add(newTeam)
     }
 
-    override fun updateTeam(team: Team, userIdsList: List<String>): Boolean {
+    override fun updateTeam(team: EditTeamDTO): Boolean {
         val index = teams.indexOfFirst { it.id == team.id }
         if (index == -1) return false
-        teams[index] = team
-
+        teams[index] = teams[index].copy(name = team.name)
         teamUsers[team.id]?.clear()
-        teamUsers[team.id]?.addAll(userIdsList)
+        teamUsers[team.id]?.addAll(team.usersIdsList)
         return true
     }
 

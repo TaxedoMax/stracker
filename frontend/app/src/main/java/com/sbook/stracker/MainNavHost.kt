@@ -10,7 +10,7 @@ import androidx.navigation.compose.composable
 import com.sbook.stracker.view.screen.LoginScreen
 import com.sbook.stracker.view.screen.ProfileScreen
 import com.sbook.stracker.view.screen.RegistrationScreen
-import com.sbook.stracker.view.screen.TeamCreationScreen
+import com.sbook.stracker.view.screen.TeamEditScreen
 import com.sbook.stracker.view.screen.TeamsScreen
 import com.sbook.stracker.viewmodel.UserViewModel
 import dagger.hilt.android.EntryPointAccessors
@@ -43,6 +43,14 @@ fun MainNavHost(navController: NavHostController){
                 teamViewModel = teamViewModel
                 )
         }
+        composable("team/{teamId}/edit"){navBackStackEntry ->
+            val teamId = navBackStackEntry.arguments?.getString("teamId") ?: ""
+            TeamEditScreen(
+                navController = navController,
+                editViewModel = factoryProvider.teamEditViewModelFactory()
+                    .create(userViewModel.userId, teamId)
+            )
+        }
         composable("profile") {
             ProfileScreen(
                 navController = navController,
@@ -59,7 +67,7 @@ fun MainNavHost(navController: NavHostController){
         }
         composable("create_task") { /* TODO: CreateTaskScreen(navController) */ }
         composable("create_team"){
-            TeamCreationScreen(
+            TeamEditScreen(
                 navController = navController,
                 editViewModel = factoryProvider.teamEditViewModelFactory()
                     .create(userViewModel.userId, null)

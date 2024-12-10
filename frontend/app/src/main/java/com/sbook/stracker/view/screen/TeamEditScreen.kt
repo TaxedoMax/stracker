@@ -34,14 +34,16 @@ import com.sbook.stracker.viewmodel.TeamEditViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeamCreationScreen(
+fun TeamEditScreen(
     navController: NavHostController,
     editViewModel: TeamEditViewModel,
 ){
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Новая команда") },
+                title = { Text(
+                    text = if(editViewModel.teamId == null) "Новая команда" else "Изменение команды",
+                ) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -132,9 +134,9 @@ fun TeamCreationScreen(
 
             Button(
                 modifier = Modifier.clickable { editViewModel.isSomethingLoading },
-                onClick = { editViewModel.createTeam(navController) }
+                onClick = { editViewModel.onConfirmButtonClick(navController) }
             ) {
-                Text("Создать")
+                Text("Подтвердить")
             }
         }
     }
