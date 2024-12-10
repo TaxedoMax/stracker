@@ -5,11 +5,11 @@ services:
       dockerfile: Dockerfile
     image: stracker
     environment:
-      SSBES_DB_HOSTNAME: ${STRACKER_DB_HOSTNAME:-postgres}
-      SSBES_DB_NAME: ${STRACKER_DB_NAME:-stracker}
-      SSBES_DB_PASSWORD: ${STRACKER_DB_PASSWORD:-postgres}
-      SSBES_DB_URL: ${STRACKER_DB_URL:-jdbc:postgresql://postgres:5433/stracker}
-      SSBES_DB_USERNAME: ${STRACKER_DB_USERNAME:-postgres}
+      SPRING_DB_HOSTNAME: ${STRACKER_DB_HOSTNAME:-postgres}
+      SPRING_DB_NAME: ${STRACKER_DB_NAME:-stracker}
+      SPRING_DB_PASSWORD: ${STRACKER_DB_PASSWORD:-postgres}
+      SPRING_DB_URL: ${STRACKER_DB_URL:-jdbc:postgresql://postgres:5433/stracker}
+      SPRING_DB_USERNAME: ${STRACKER_DB_USERNAME:-postgres}
     ports:
       - "8888:8080"
     depends_on:
