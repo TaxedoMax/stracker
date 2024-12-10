@@ -10,7 +10,7 @@ data class GetTeamResponse (
     val description: String?,
     val status: TeamStatus,
     val tasks: List<TaskInTeam>,
-    val isUserLeader: Boolean,
+    val isUserLead: Boolean,
 )
 
 data class TaskInTeam (

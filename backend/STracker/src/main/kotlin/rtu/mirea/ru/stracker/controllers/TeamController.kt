@@ -37,11 +37,19 @@ class TeamController(
         }
     }
 
-    @GetMapping()
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     fun getTeams(
         @RequestBody request: GetTeamRequest
     ): GetTeamResponse {
         return teamService.getTeam(request)
+    }
+
+    @GetMapping("/{teamId}/users")
+    @ResponseStatus(HttpStatus.OK)
+    fun getUsers(
+        @PathVariable teamId: Long
+    ): GetUsersResponse {
+        return teamService.getUsers(teamId)
     }
 }

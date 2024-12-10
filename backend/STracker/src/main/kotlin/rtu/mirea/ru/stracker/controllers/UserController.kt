@@ -39,7 +39,7 @@ class UserController(
         }
     }
 
-    @GetMapping("team/{id}")
+    @GetMapping("/{id}/team")
     @ResponseStatus(HttpStatus.OK)
     fun getTeams(
         @PathVariable id: Long

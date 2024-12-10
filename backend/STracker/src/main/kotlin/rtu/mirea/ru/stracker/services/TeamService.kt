@@ -128,11 +128,29 @@ class TeamService(
                     teamId = task.teamId,
                 )
             },
-            isUserLeader = isUserLeadOfTeam(request.teamId, request.userId),
+            isUserLead = isUserLeadOfTeam(request.teamId, request.userId),
         )
     }
 
     private fun takeLoginById(userId: Long): String {
         return userRepository.findById(userId).get().login
+    }
+
+    fun getUsers(teamId: Long): GetUsersResponse{
+        val userTeams = userTeamRepository.findAllByTeamId(teamId)
+        if (userTeams.isEmpty()){
+            throw IllegalArgumentException("Команды с id $teamId не существует")
+        }
+        return GetUsersResponse(
+            users = userTeams.map { userTeam ->
+                val user = userRepository.findById(userTeam.userId).get()
+                UserInTeam(
+                    id = user.id,
+                    login = user.login,
+                    photo = user.photo,
+                    isLead = isUserLeadOfTeam(teamId, user.id),
+                )
+            }
+        )
     }
 }
