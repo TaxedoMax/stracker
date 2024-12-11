@@ -9,9 +9,10 @@ import rtu.mirea.ru.stracker.repository.UserRepository
 @Service("UserService")
 class UserService(
     private val userRepository: UserRepository,
+    private val utils: Utils,
 ) {
     fun createUser(userDto: CreateUserRequest): CreateUserResponse {
-        if (isUserExist(userDto.login)){
+        if (utils.isUserExistByLogin(userDto.login)){
             throw IllegalArgumentException("Пользователь с таким именем уже есть")
         }
         val user = User(
@@ -24,10 +25,5 @@ class UserService(
             result.login,
             result.photo
         )
-    }
-
-    fun isUserExist(username: String): Boolean {
-        val user = userRepository.findByLogin(username)
-        return user != null
     }
 }

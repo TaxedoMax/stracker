@@ -12,7 +12,7 @@ class Task(
     @Column(name = "author_id")
     val authorId: Long = 0,
     @Column(name = "executor_id")
-    val executorId: Long? = null,
+    var executorId: Long? = null,
     @Column(name = "team_id")
     val teamId: Long = 0,
 ){

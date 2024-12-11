@@ -7,4 +7,6 @@ import rtu.mirea.ru.stracker.entity.Task
 @Repository
 interface TaskRepository : JpaRepository<Task, Long>{
     fun findAllByTeamId(teamId: Long): List<Task>
+    fun findAllByExecutorId(executorId: Long): List<Task>
+    fun findAllByExecutorIdAndTeamId(executorId: Long, teamId: Long): List<Task>
 }

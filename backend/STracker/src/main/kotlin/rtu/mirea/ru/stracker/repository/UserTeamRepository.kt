@@ -11,4 +11,5 @@ interface UserTeamRepository : JpaRepository<UserTeam, UserTeamId>{
     fun findAllByUserId(userId: Long): List<UserTeam>
     fun findAllByTeamId(teamId: Long): List<UserTeam>
     fun existsUserTeamsByUserIdAndTeamId(userId: Long, teamId: Long): Boolean
+    fun removeByUserIdAndTeamId(userId: Long, teamId: Long)
 }

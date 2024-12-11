@@ -11,8 +11,9 @@ import rtu.mirea.ru.stracker.repository.UserRepository
 
 @Service
 class TaskService(
-    val taskRepository: TaskRepository,
-    val userRepository: UserRepository,
+    private val taskRepository: TaskRepository,
+    private val userRepository: UserRepository,
+    private val utils: Utils,
 ){
     fun create(request: CreateTaskRequest): CreateTaskResponse{
         validateCreateRequest(request)
@@ -25,7 +26,7 @@ class TaskService(
         val task = Task(
             name = request.name,
             status = TaskStatus.OPEN,
-            type = TaskType.valueOf(request.type),
+            type = TaskType.valueOf(request.type.toString()),
             description = request.description,
             authorId = request.authorId,
             executorId = executorId,
@@ -36,8 +37,8 @@ class TaskService(
         return CreateTaskResponse(
             id = result.id,
             name = result.name,
-            status = result.status.toString(),
-            type = result.type.toString(),
+            status = result.status,
+            type = result.type,
             description = result.description,
             authorId = result.authorId,
             executorLogin = request.executorLogin,
@@ -48,17 +49,17 @@ class TaskService(
     private fun validateCreateRequest(request: CreateTaskRequest){
         val errors = mutableListOf<String>()
 
-        if (userRepository.findById(request.authorId).isEmpty){
+        if (!utils.isUserExistById(request.authorId)){
             errors.add("Автора с таким Id не найдено:(")
         }
-        if (request.executorLogin != null && userRepository.findByLogin(request.executorLogin) == null){
+        if (request.executorLogin != null && !utils.isUserExistByLogin(request.executorLogin)){
             errors.add("исполнитель с таким логином не найден")
         }
         if (request.name.isEmpty()) {
             errors.add("Название таски обязательно для заполнения")
         }
         try {
-            TaskType.valueOf(request.type)
+            TaskType.valueOf(request.type.toString())
         } catch (e: IllegalArgumentException) {
             errors.add("${request.type} не существующий тип таски")
         }

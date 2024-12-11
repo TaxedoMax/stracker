@@ -1,11 +1,14 @@
 package rtu.mirea.ru.stracker.services
 
+import jakarta.persistence.EntityNotFoundException
 import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
+import org.springframework.web.client.HttpClientErrorException.Forbidden
 import rtu.mirea.ru.stracker.DTO.team.*
 import rtu.mirea.ru.stracker.DTO.team.GetTeamRequest
 import rtu.mirea.ru.stracker.DTO.user.GetTeamsResponse
 import rtu.mirea.ru.stracker.DTO.user.TeamsPreview
+import rtu.mirea.ru.stracker.entity.Task
 import rtu.mirea.ru.stracker.entity.Team
 import rtu.mirea.ru.stracker.entity.TeamStatus
 import rtu.mirea.ru.stracker.entity.UserTeam
@@ -20,6 +23,7 @@ class TeamService(
     private val userTeamRepository: UserTeamRepository,
     private val userRepository: UserRepository,
     private val taskRepository: TaskRepository,
+    private val utils: Utils,
 ) {
     @Transactional
     fun createTeam(
@@ -64,7 +68,7 @@ class TeamService(
     }
 
     fun addUserToTeam(request: AddUserRequest): AddUserResponse{
-        if (!isUserLeadOfTeam(request.teamId, request.leadId)){
+        if (!utils.isUserLeadOfTeam(request.teamId, request.leadId)){
             throw IllegalArgumentException("Пользователь не является лидером команды")
         }
         val user = userRepository.findByLogin(request.userLogin)
@@ -77,14 +81,9 @@ class TeamService(
         return AddUserResponse(true)
     }
 
-    fun isUserLeadOfTeam(teamId: Long, userId: Long): Boolean {
-        val team = teamRepository.findByIdAndLeadId(teamId, userId)
-        return team != null
-    }
-
     fun getTeams(id: Long): GetTeamsResponse {
         if (userRepository.findById(id).isEmpty) {
-            throw IllegalArgumentException("Пользователь не найден")
+            throw EntityNotFoundException("Пользователь не найден")
         }
         val teamIds = userTeamRepository.findAllByUserId(id)
 
@@ -96,7 +95,7 @@ class TeamService(
                     description = team.description,
                     photo = team.photo,
                     name = team.name,
-                    isLeader = isUserLeadOfTeam(team.id, id),
+                    isLeader = utils.isUserLeadOfTeam(team.id, id),
                 )
             }
         )
@@ -124,16 +123,12 @@ class TeamService(
                     status = task.status.toString(),
                     type = task.type.toString(),
                     authorId = task.authorId,
-                    executorLogin = if (task.executorId != null) takeLoginById(task.executorId) else null,
+                    executorLogin = if (task.executorId != null) utils.takeLoginById(task.executorId!!) else null,
                     teamId = task.teamId,
                 )
             },
-            isUserLead = isUserLeadOfTeam(request.teamId, request.userId),
+            isUserLead = utils.isUserLeadOfTeam(request.teamId, request.userId),
         )
-    }
-
-    private fun takeLoginById(userId: Long): String {
-        return userRepository.findById(userId).get().login
     }
 
     fun getUsers(teamId: Long): GetUsersResponse{
@@ -148,9 +143,52 @@ class TeamService(
                     id = user.id,
                     login = user.login,
                     photo = user.photo,
-                    isLead = isUserLeadOfTeam(teamId, user.id),
+                    isLead = utils.isUserLeadOfTeam(teamId, user.id),
                 )
             }
         )
+    }
+
+    fun getTasks(id: Long): List<Task>{
+        if (!utils.isUserExistById(id)){
+            throw EntityNotFoundException("пользователя с id $id не существует")
+        }
+        return taskRepository.findAllByExecutorId(id)
+    }
+
+    @Transactional
+    fun deleteUser(request: DeleteUserRequest): Boolean{
+        try {
+            if (!utils.isUserExistByLogin(request.userLoginToDelete)){
+                throw EntityNotFoundException("пользователя с именем ${request.userLoginToDelete} не существует")
+            }
+            if (utils.isUserLeadOfTeam(request.teamId, utils.takeIdByLogin(request.userLoginToDelete))){
+                throw IllegalArgumentException("Пользователя с именем ${request.userLoginToDelete} является лидером и не может быть удален")
+            }
+            val userToDeleteId = utils.takeIdByLogin(request.userLoginToDelete)
+            if (request.userId == userToDeleteId || utils.isUserLeadOfTeam(request.teamId, request.userId)){
+                userTeamRepository.removeByUserIdAndTeamId(userToDeleteId, request.teamId)
+                val tasks = taskRepository.findAllByExecutorIdAndTeamId(userToDeleteId, request.teamId)
+                for (task in tasks){
+                    task.executorId = null
+                    taskRepository.save(task)
+                }
+            }
+
+            return true
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    @Transactional
+    fun editTeam(request: EditTeamRequest): Team{
+        if (!utils.isUserLeadOfTeam(request.teamId, request.userId)){
+            throw IllegalArgumentException("Пользователь не является лидером команды")
+        }
+        val team = teamRepository.findById(request.teamId).get()
+        team.name = request.teamName
+        teamRepository.save(team)
+        return team
     }
 }

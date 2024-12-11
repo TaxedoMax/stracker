@@ -5,7 +5,7 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "teams")
 data class Team(
-    val name: String = "",
+    var name: String = "",
     @Column(name = "lead_id")
     val leadId: Long = 0,
     val description: String? = null,
