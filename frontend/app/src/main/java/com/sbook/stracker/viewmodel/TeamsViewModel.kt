@@ -5,14 +5,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sbook.stracker.dto.team.TeamForUserDTO
-import com.sbook.stracker.entity.Team
 import com.sbook.stracker.repository.TeamRepository
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedFactory
 import dagger.assisted.AssistedInject
 import kotlinx.coroutines.launch
 
-class TeamViewModel @AssistedInject constructor(
+class TeamsViewModel @AssistedInject constructor(
     private val teamRepository: TeamRepository,
     @Assisted
     private val userId: String,
@@ -26,7 +25,7 @@ class TeamViewModel @AssistedInject constructor(
     init{
         loadTeams()
     }
-    fun loadTeams(){
+    private fun loadTeams(){
         viewModelScope.launch {
             _isDataLoading.value = true
             _userTeams.value = teamRepository.getTeamsByUserId(userId)
@@ -36,7 +35,7 @@ class TeamViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(userId: String): TeamViewModel
+        fun create(userId: String): TeamsViewModel
     }
     @Suppress("UNCHECKED_CAST")
     companion object {

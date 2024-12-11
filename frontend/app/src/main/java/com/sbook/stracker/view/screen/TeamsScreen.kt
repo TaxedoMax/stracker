@@ -8,22 +8,21 @@ import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.sbook.stracker.dto.team.TeamForUserDTO
-import com.sbook.stracker.entity.Team
-import com.sbook.stracker.viewmodel.TeamViewModel
+import com.sbook.stracker.viewmodel.TeamsViewModel
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeamsScreen(
     navController: NavController,
-    teamViewModel: TeamViewModel
+    teamViewModel: TeamsViewModel
 ) {
     val teams by teamViewModel.userTeams
     val isDataLoading by teamViewModel.isDataLoading
@@ -57,7 +56,9 @@ fun TeamsScreen(
                 if(!isDataLoading) {
                     LazyColumn(modifier = Modifier.align(Alignment.TopCenter)) {
                         items(teams) { team ->
-                            TeamItem(team = team, navController = navController)
+                            Box(Modifier.padding(10.dp)) {
+                                TeamItem(team = team, navController = navController)
+                            }
                         }
                     }
                 } else{
@@ -85,10 +86,8 @@ fun TeamsScreen(
 
 @Composable
 fun TeamItem(team: TeamForUserDTO, navController: NavController) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
+    Button(
+        onClick = { navController.navigate("team/${Json.encodeToString(team)}/tasks") },
     ) {
         Row {
             Text(
@@ -98,7 +97,7 @@ fun TeamItem(team: TeamForUserDTO, navController: NavController) {
                     .weight(1F),
                 style = MaterialTheme.typography.bodyLarge
             )
-            if(team.isOwner){
+            if (team.isOwner) {
                 IconButton(onClick = { navController.navigate("team/${team.id}/edit") }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
@@ -107,5 +106,6 @@ fun TeamItem(team: TeamForUserDTO, navController: NavController) {
                 }
             }
         }
+
     }
 }

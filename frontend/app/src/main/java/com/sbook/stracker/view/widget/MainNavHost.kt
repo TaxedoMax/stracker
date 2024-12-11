@@ -1,4 +1,4 @@
-package com.sbook.stracker
+package com.sbook.stracker.view.widget
 
 import android.app.Activity
 import androidx.compose.runtime.Composable
@@ -7,13 +7,17 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.sbook.stracker.ViewModelFactoryProvider
+import com.sbook.stracker.dto.team.TeamForUserDTO
 import com.sbook.stracker.view.screen.LoginScreen
 import com.sbook.stracker.view.screen.ProfileScreen
 import com.sbook.stracker.view.screen.RegistrationScreen
 import com.sbook.stracker.view.screen.TeamEditScreen
+import com.sbook.stracker.view.screen.TeamTasksScreen
 import com.sbook.stracker.view.screen.TeamsScreen
 import com.sbook.stracker.viewmodel.UserViewModel
 import dagger.hilt.android.EntryPointAccessors
+import kotlinx.serialization.json.Json
 
 @Composable
 fun MainNavHost(navController: NavHostController){
@@ -36,6 +40,12 @@ fun MainNavHost(navController: NavHostController){
                 userViewModel = userViewModel
                 )
         }
+        composable("profile") {
+            ProfileScreen(
+                navController = navController,
+                userViewModel = userViewModel
+            )
+        }
         composable("teams") {
             val teamViewModel = factoryProvider.teamViewModelFactory().create(userViewModel.userId)
             TeamsScreen(
@@ -51,15 +61,13 @@ fun MainNavHost(navController: NavHostController){
                     .create(userViewModel.userId, teamId)
             )
         }
-        composable("profile") {
-            ProfileScreen(
+        composable("team/{team}/tasks") { backStackEntry ->
+            val teamString = backStackEntry.arguments?.getString("team") ?: ""
+            val team = Json.decodeFromString<TeamForUserDTO>(teamString)
+            TeamTasksScreen(
                 navController = navController,
-                userViewModel = userViewModel
+                viewModel = factoryProvider.teamTasksViewModelFactory().create(team),
             )
-        }
-        composable("team_tasks/{teamId}") { backStackEntry ->
-            val teamId = backStackEntry.arguments?.getString("teamId") ?: ""
-            // TODO: TeamTasksScreen(navController, teamId)
         }
         composable("task_details/{taskId}") { backStackEntry ->
             val taskId = backStackEntry.arguments?.getString("taskId") ?: ""

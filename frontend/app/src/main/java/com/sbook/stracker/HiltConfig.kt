@@ -1,8 +1,5 @@
 package com.sbook.stracker
 
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.sbook.stracker.repository.TaskRepository
 import com.sbook.stracker.repository.TeamRepository
 import com.sbook.stracker.repository.UserRepository
@@ -10,7 +7,8 @@ import com.sbook.stracker.repository.mock.InMemoryTaskRepository
 import com.sbook.stracker.repository.mock.InMemoryTeamRepository
 import com.sbook.stracker.repository.mock.InMemoryUserRepository
 import com.sbook.stracker.viewmodel.TeamEditViewModel
-import com.sbook.stracker.viewmodel.TeamViewModel
+import com.sbook.stracker.viewmodel.TeamTasksViewModel
+import com.sbook.stracker.viewmodel.TeamsViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -22,8 +20,9 @@ import javax.inject.Singleton
 @EntryPoint
 @InstallIn(ActivityComponent::class)
 interface ViewModelFactoryProvider{
-    fun teamViewModelFactory(): TeamViewModel.Factory
+    fun teamViewModelFactory(): TeamsViewModel.Factory
     fun teamEditViewModelFactory(): TeamEditViewModel.Factory
+    fun teamTasksViewModelFactory(): TeamTasksViewModel.Factory
 }
 @InstallIn(SingletonComponent::class)
 @Module
