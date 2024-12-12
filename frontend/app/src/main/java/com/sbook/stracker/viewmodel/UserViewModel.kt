@@ -3,6 +3,7 @@ package com.sbook.stracker.viewmodel
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.sbook.stracker.dto.user.UserDTO
 import com.sbook.stracker.entity.Task
 import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.TaskRepository
@@ -21,7 +22,7 @@ class UserViewModel @Inject constructor(
     private var _userId: String = "-1"
     val userId: String get() = _userId
 
-    val user = mutableStateOf<User?>(null)
+    val user = mutableStateOf<UserDTO?>(null)
     val userTasks = mutableStateOf<List<Task>>(emptyList())
 
     val isDataLoading = mutableStateOf(false)

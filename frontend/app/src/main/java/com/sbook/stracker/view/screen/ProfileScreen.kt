@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.sbook.stracker.entity.Task
 import com.sbook.stracker.view.widget.TaskItem
 import com.sbook.stracker.viewmodel.UserViewModel
@@ -21,8 +22,9 @@ import com.sbook.stracker.viewmodel.UserViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProfileScreen(
-    navController: NavController,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    navigateTo: (route: String) -> Unit,
+    navigateBack: () -> Unit,
 ) {
     val user by userViewModel.user
     val userTasks by userViewModel.userTasks
@@ -32,7 +34,7 @@ fun ProfileScreen(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navigateBack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
@@ -84,7 +86,7 @@ fun ProfileScreen(
                 // Список задач пользователя
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     items(userTasks.size) { index ->
-                        TaskItem(task = userTasks[index])
+                        TaskItem(task = userTasks[index], navigateTo)
                     }
                 }
             }

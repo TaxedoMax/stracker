@@ -6,6 +6,7 @@ import com.sbook.stracker.repository.UserRepository
 import com.sbook.stracker.repository.mock.InMemoryTaskRepository
 import com.sbook.stracker.repository.mock.InMemoryTeamRepository
 import com.sbook.stracker.repository.mock.InMemoryUserRepository
+import com.sbook.stracker.viewmodel.TaskViewModel
 import com.sbook.stracker.viewmodel.TeamEditViewModel
 import com.sbook.stracker.viewmodel.TeamTasksViewModel
 import com.sbook.stracker.viewmodel.TeamsViewModel
@@ -23,6 +24,7 @@ interface ViewModelFactoryProvider{
     fun teamViewModelFactory(): TeamsViewModel.Factory
     fun teamEditViewModelFactory(): TeamEditViewModel.Factory
     fun teamTasksViewModelFactory(): TeamTasksViewModel.Factory
+    fun taskEditViewModelFactory(): TaskViewModel.Factory
 }
 @InstallIn(SingletonComponent::class)
 @Module

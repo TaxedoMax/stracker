@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -24,10 +25,16 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.sbook.stracker.view.widget.TaskItem
 import com.sbook.stracker.viewmodel.TeamTasksViewModel
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TeamTasksScreen(navController: NavHostController, viewModel: TeamTasksViewModel) {
+fun TeamTasksScreen(
+    viewModel: TeamTasksViewModel,
+    navigateTo: (String) -> Unit,
+    navigateBack: () -> Unit,
+) {
     val teamName = viewModel.team.name
     val tasks by viewModel.tasksList
     val isDataLoading by viewModel.isDataLoading
@@ -37,7 +44,7 @@ fun TeamTasksScreen(navController: NavHostController, viewModel: TeamTasksViewMo
             TopAppBar(
                 title = { Text(teamName) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navigateBack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
@@ -45,7 +52,7 @@ fun TeamTasksScreen(navController: NavHostController, viewModel: TeamTasksViewMo
                     }
                 },
                 actions = {
-                    IconButton(onClick = { navController.navigate("profile")}) {
+                    IconButton(onClick = { navigateTo("profile")}) {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Профиль"
@@ -71,9 +78,15 @@ fun TeamTasksScreen(navController: NavHostController, viewModel: TeamTasksViewMo
             } else{
                 LazyColumn(Modifier.weight(1F)) {
                     items(tasks){ task ->
-                        TaskItem(task = task)
+                        TaskItem(task = task, navigateTo = navigateTo)
                     }
                 }
+            }
+
+            Button(onClick = {
+                navigateTo("team/${Json.encodeToString(viewModel.team)}/new_task")
+            }) {
+                Text(text = "Создать")
             }
         }
     }

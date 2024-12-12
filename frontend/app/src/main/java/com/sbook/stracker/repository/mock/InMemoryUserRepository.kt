@@ -1,9 +1,9 @@
 package com.sbook.stracker.repository.mock
 
-import com.sbook.stracker.dto.AuthDTO
+import com.sbook.stracker.dto.user.AuthDTO
+import com.sbook.stracker.dto.user.UserDTO
 import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.UserRepository
-import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 class InMemoryUserRepository @Inject constructor(
         private val teamRepository: InMemoryTeamRepository,
@@ -15,16 +15,24 @@ class InMemoryUserRepository @Inject constructor(
         User(id = "3", login = "user3", password = "password3")
     )
 
-    override fun getUserById(id: String): User? = users.find { it.id == id }
+    override fun getUserById(id: String): UserDTO? {
+        val user = users.find { it.id == id }
+        return if (user != null) UserDTO(id = user.id, login = user.login) else null
+    }
 
-    override fun getUserByLogin(login: String): User? = users.find { it.login == login }
+    override fun getUserByLogin(login: String): UserDTO? {
+        val user = users.find { it.login == login }
+        return if (user != null) UserDTO(id = user.id, login = user.login) else null
+    }
 
-    override fun getUsersByTeam(teamId: String): List<User> {
-        return teamRepository.getUsersByTeam(teamId).map{ userId ->
+    override fun getUsersByTeam(teamId: String): List<UserDTO> {
+        val list: List<User> = teamRepository.getUsersByTeam(teamId).map{ userId ->
             users.find {user ->
                 user.id == userId
             }!!
         }
+
+        return  list.map{ user -> UserDTO(id = user.id, login = user.login) }
     }
 
     override fun registerUser(authDTO: AuthDTO): String {
@@ -49,7 +57,7 @@ class InMemoryUserRepository @Inject constructor(
     }
 
     override fun login(authDTO: AuthDTO): String {
-        val existingUser = getUserByLogin(authDTO.login)
+        val existingUser = users.find { it.login == authDTO.login }
         return if(existingUser == null || authDTO.password != existingUser.password) "-1"
         else existingUser.id
     }

@@ -1,10 +1,9 @@
 package com.sbook.stracker.repository.mock
 
-import com.sbook.stracker.dto.team.CreateTeamDTO
+import com.sbook.stracker.dto.team.TeamCreateRequest
 import com.sbook.stracker.dto.team.EditTeamDTO
-import com.sbook.stracker.dto.team.TeamForUserDTO
+import com.sbook.stracker.dto.team.TeamResponseDTO
 import com.sbook.stracker.entity.Team
-import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.TeamRepository
 import kotlinx.coroutines.delay
 
@@ -33,7 +32,7 @@ class InMemoryTeamRepository : TeamRepository {
     }
 
     override fun getTeamById(id: String): Team? = teams.find { it.id == id }
-    override suspend fun getTeamsByUserId(id: String): List<TeamForUserDTO> {
+    override suspend fun getTeamsByUserId(id: String): List<TeamResponseDTO> {
         delay(500)
 
         val tmpTeams: ArrayList<String> = arrayListOf()
@@ -43,7 +42,7 @@ class InMemoryTeamRepository : TeamRepository {
 
         return teams.filter {tmpTeams.contains(it.id)}
             .map{team ->
-                TeamForUserDTO(
+                TeamResponseDTO(
                     id = team.id,
                     name = team.name,
                     isOwner = team.adminId == id
@@ -51,7 +50,7 @@ class InMemoryTeamRepository : TeamRepository {
             }
     }
 
-    override fun createTeam(createTeamDTO: CreateTeamDTO): Boolean {
+    override fun createTeam(createTeamDTO: TeamCreateRequest): Boolean {
         val id = (teams.size + 1).toString()
         val newTeam = Team(
             id = id,

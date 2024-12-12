@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.sbook.stracker.dto.team.TeamForUserDTO
+import com.sbook.stracker.dto.team.TeamResponseDTO
 import com.sbook.stracker.viewmodel.TeamsViewModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -21,8 +21,8 @@ import kotlinx.serialization.json.Json
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeamsScreen(
-    navController: NavController,
-    teamViewModel: TeamsViewModel
+    teamViewModel: TeamsViewModel,
+    navigateTo: (route: String) -> Unit,
 ) {
     val teams by teamViewModel.userTeams
     val isDataLoading by teamViewModel.isDataLoading
@@ -32,7 +32,7 @@ fun TeamsScreen(
             TopAppBar(
                 title = { Text("Ваши команды") },
                 actions = {
-                    IconButton(onClick = { navController.navigate("profile")}) {
+                    IconButton(onClick = { navigateTo("profile")}) {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Профиль"
@@ -57,7 +57,7 @@ fun TeamsScreen(
                     LazyColumn(modifier = Modifier.align(Alignment.TopCenter)) {
                         items(teams) { team ->
                             Box(Modifier.padding(10.dp)) {
-                                TeamItem(team = team, navController = navController)
+                                TeamItem(team = team, navigateTo = navigateTo)
                             }
                         }
                     }
@@ -75,7 +75,7 @@ fun TeamsScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             Button(
-                onClick = { navController.navigate("create_team") },
+                onClick = { navigateTo("create_team") },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(text = "Создать новую команду")
@@ -85,9 +85,9 @@ fun TeamsScreen(
 }
 
 @Composable
-fun TeamItem(team: TeamForUserDTO, navController: NavController) {
+fun TeamItem(team: TeamResponseDTO, navigateTo: (route: String) -> Unit) {
     Button(
-        onClick = { navController.navigate("team/${Json.encodeToString(team)}/tasks") },
+        onClick = { navigateTo("team/${Json.encodeToString(team)}/tasks") },
     ) {
         Row {
             Text(
@@ -98,7 +98,7 @@ fun TeamItem(team: TeamForUserDTO, navController: NavController) {
                 style = MaterialTheme.typography.bodyLarge
             )
             if (team.isOwner) {
-                IconButton(onClick = { navController.navigate("team/${team.id}/edit") }) {
+                IconButton(onClick = { navigateTo("team/${team.id}/edit") }) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Редактировать"

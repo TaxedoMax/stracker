@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.sbook.stracker.R
@@ -30,8 +31,8 @@ import com.sbook.stracker.viewmodel.UserViewModel
 
 @Composable
 fun LoginScreen(
-    navController: NavHostController,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    navigateTo: (route: String) -> Unit,
 ) {
     val authViewModel: AuthViewModel = hiltViewModel()
     val login = authViewModel.login
@@ -76,7 +77,7 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Button(onClick = { authViewModel.loginUser(userViewModel, navController) }) {
+        Button(onClick = { authViewModel.loginUser(userViewModel, navigateTo) }) {
             Text(text = "Войти")
         }
 
@@ -86,7 +87,7 @@ fun LoginScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        TextButton(onClick = { navController.navigate("register") }) {
+        TextButton(onClick = { navigateTo("register") }) {
             Text(text = "Нет аккаунта? Зарегистрироваться")
         }
     }
@@ -96,6 +97,6 @@ fun LoginScreen(
 @Composable
 fun PreviewLoginScreen(){
     STrackerTheme {
-        LoginScreen(navController = rememberNavController(), hiltViewModel())
+        LoginScreen(hiltViewModel(), { })
     }
 }

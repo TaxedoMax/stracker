@@ -29,14 +29,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.sbook.stracker.dto.user.UserDTO
 import com.sbook.stracker.entity.User
 import com.sbook.stracker.viewmodel.TeamEditViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TeamEditScreen(
-    navController: NavHostController,
     editViewModel: TeamEditViewModel,
+    navigateTo: (route: String) -> Unit,
+    navigateBack: () -> Unit,
 ){
     Scaffold(
         topBar = {
@@ -45,7 +47,7 @@ fun TeamEditScreen(
                     text = if(editViewModel.teamId == null) "Новая команда" else "Изменение команды",
                 ) },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navigateBack() }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                             contentDescription = "Назад"
@@ -53,7 +55,7 @@ fun TeamEditScreen(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { navController.navigate("profile")}) {
+                    IconButton(onClick = { navigateTo("profile")}) {
                         Icon(
                             imageVector = Icons.Default.Person,
                             contentDescription = "Профиль"
@@ -134,7 +136,7 @@ fun TeamEditScreen(
 
             Button(
                 modifier = Modifier.clickable { editViewModel.isSomethingLoading },
-                onClick = { editViewModel.onConfirmButtonClick(navController) }
+                onClick = { editViewModel.onConfirmButtonClick(navigateBack) }
             ) {
                 Text("Подтвердить")
             }
@@ -143,7 +145,7 @@ fun TeamEditScreen(
 }
 
 @Composable
-fun UserItem(user: User, isRemovable: Boolean, onRemove: () -> Unit){
+fun UserItem(user: UserDTO, isRemovable: Boolean, onRemove: () -> Unit){
     Row (verticalAlignment = Alignment.CenterVertically){
         Text(
             text = user.login,

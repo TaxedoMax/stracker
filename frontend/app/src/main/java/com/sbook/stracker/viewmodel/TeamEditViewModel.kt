@@ -5,8 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavHostController
-import com.sbook.stracker.dto.team.CreateTeamDTO
+import com.sbook.stracker.dto.team.TeamCreateRequest
 import com.sbook.stracker.dto.team.EditTeamDTO
+import com.sbook.stracker.dto.user.UserDTO
 import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.TeamRepository
 import com.sbook.stracker.repository.UserRepository
@@ -25,7 +26,7 @@ class TeamEditViewModel @AssistedInject constructor(
 ) : ViewModel(){
     val name = mutableStateOf("")
 
-    val usersList = mutableStateOf<List<User>>(mutableListOf())
+    val usersList = mutableStateOf<List<UserDTO>>(mutableListOf())
     val newUserLogin = mutableStateOf("")
 
     val dialogText = mutableStateOf("")
@@ -100,21 +101,21 @@ class TeamEditViewModel @AssistedInject constructor(
         usersList.value = usersList.value.minus(usersList.value[index])
     }
 
-    fun onConfirmButtonClick(navController: NavHostController){
-        if(teamId == null) createTeam(navController) else editTeam(navController)
+    fun onConfirmButtonClick(navigateBack: () -> Unit){
+        if(teamId == null) createTeam(navigateBack) else editTeam(navigateBack)
     }
-    private fun createTeam(navController: NavHostController){
+    private fun createTeam(navigateBack: () -> Unit){
         viewModelScope.launch {
             isDataLoading.value = true
 
             if(name.value.isNotEmpty()){
-                val teamDTO = CreateTeamDTO(
+                val teamDTO = TeamCreateRequest(
                     name = name.value,
                     adminId = ownerId,
                     usersIdsList = usersList.value.map{ it.id }
                 )
                 teamRepository.createTeam(teamDTO)
-                navController.popBackStack()
+                navigateBack()
             } else{
                 dialogText.value = "Название не должно быть пустым!"
                 isDialogOpened.value = true
@@ -124,7 +125,7 @@ class TeamEditViewModel @AssistedInject constructor(
         }
     }
 
-    private fun editTeam(navController: NavHostController){
+    private fun editTeam(navigateBack: () -> Unit){
         viewModelScope.launch {
             isDataLoading.value = true
 
@@ -135,7 +136,7 @@ class TeamEditViewModel @AssistedInject constructor(
                     usersIdsList = usersList.value.map{ it.id }
                 )
                 teamRepository.updateTeam(teamDTO)
-                navController.popBackStack()
+                navigateBack()
             } else{
                 dialogText.value = "Название не должно быть пустым!"
                 isDialogOpened.value = true

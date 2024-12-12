@@ -28,8 +28,8 @@ import com.sbook.stracker.viewmodel.UserViewModel
 
 @Composable
 fun RegistrationScreen(
-    navController: NavHostController,
-    userViewModel: UserViewModel
+    userViewModel: UserViewModel,
+    navigateTo: (route: String) -> Unit,
 ) {
     val authViewModel : AuthViewModel = hiltViewModel()
 
@@ -66,7 +66,7 @@ fun RegistrationScreen(
         )
 
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = { authViewModel.registerUser(userViewModel, navController) }) {
+        Button(onClick = { authViewModel.registerUser(userViewModel, navigateTo) }) {
             Text(text = "Зарегистрироваться")
         }
 
@@ -76,7 +76,7 @@ fun RegistrationScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        TextButton(onClick = { navController.navigate("login") }) {
+        TextButton(onClick = { navigateTo("login") }) {
             Text(text = "Уже есть аккаунт? Войти")
         }
     }
@@ -86,6 +86,6 @@ fun RegistrationScreen(
 @Composable
 fun PreviewRegisterScreen(){
     STrackerTheme {
-        RegistrationScreen(rememberNavController(), hiltViewModel())
+        RegistrationScreen( hiltViewModel(), { })
     }
 }
