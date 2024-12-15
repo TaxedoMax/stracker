@@ -1,4 +1,4 @@
-package com.sbook.stracker.view.widget
+package com.sbook.stracker.view
 
 import android.app.Activity
 import androidx.compose.runtime.Composable
