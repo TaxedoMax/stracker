@@ -3,8 +3,8 @@ package com.sbook.stracker.dto.team
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class TeamResponseDTO(
+data class TeamResponse(
     val id: Long,
     val name: String,
-    val isOwner: Boolean
+    val isUserLead: Boolean
 )

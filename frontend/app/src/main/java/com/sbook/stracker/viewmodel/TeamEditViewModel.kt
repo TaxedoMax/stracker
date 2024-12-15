@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sbook.stracker.dto.team.TeamCreateRequest
 import com.sbook.stracker.dto.team.TeamEditRequest
+import com.sbook.stracker.dto.team.TeamGetRequest
 import com.sbook.stracker.dto.user.UserDTO
 import com.sbook.stracker.repository.TeamRepository
 import com.sbook.stracker.repository.UserRepository
@@ -18,7 +19,7 @@ class TeamEditViewModel @AssistedInject constructor(
     private val teamRepository: TeamRepository,
     private val userRepository: UserRepository,
     @Assisted("userId")
-    val ownerId: Long,
+    val userId: Long,
     @Assisted("teamId")
     val teamId: Long?,
 ) : ViewModel(){
@@ -43,9 +44,13 @@ class TeamEditViewModel @AssistedInject constructor(
     private fun loadData(){
         viewModelScope.launch {
             isDataLoading.value = true
-            // TODO: Add exception
 
-            val team = teamRepository.getTeamById(teamId!!)
+            val team = teamRepository.getTeamById(
+                TeamGetRequest(
+                    userId = userId,
+                    teamId = teamId!!
+                )
+            )
             name.value = team!!.name
 
             usersList.value = userRepository.getUsersByTeam(teamId)
@@ -57,7 +62,7 @@ class TeamEditViewModel @AssistedInject constructor(
         viewModelScope.launch {
             isDataLoading.value = true
             // TODO: Some exception if bad inet
-            val user = userRepository.getUserById(ownerId)!!
+            val user = userRepository.getUserById(userId)!!
             usersList.value = listOf(user)
             isDataLoading.value = false
         }
@@ -109,7 +114,7 @@ class TeamEditViewModel @AssistedInject constructor(
             if(name.value.isNotEmpty()){
                 val teamDTO = TeamCreateRequest(
                     name = name.value,
-                    adminId = ownerId,
+                    adminId = userId,
                     usersIdsList = usersList.value.map{ it.id }
                 )
                 teamRepository.createTeam(teamDTO)

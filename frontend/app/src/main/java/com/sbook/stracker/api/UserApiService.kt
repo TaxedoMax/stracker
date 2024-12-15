@@ -1,20 +1,35 @@
 package com.sbook.stracker.api
 
 import com.sbook.stracker.dto.user.AuthRequest
+import com.sbook.stracker.dto.user.UserDTO
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
+import retrofit2.http.Path
 
 interface UserApiService {
-    @GET("/user/login")
+    @GET("/user/login/{login}/check")
+    fun checkLogin(
+        @Path("login")
+        login: String
+    ): Call<Boolean>
+
+    @GET("/user/login/{login}")
     fun login(
-        @Body
-        body: AuthRequest
+        @Path("login")
+        login: String,
     ): Call<Long>
 
-    @GET("/user/register")
+    @POST("/user")
     fun register(
         @Body
         body: AuthRequest
-    ): Call<Long>
+    ): Call<UserDTO>
+
+    @GET("/team/{teamId}/users")
+    fun getUsersByTeamId(
+        @Path("teamId")
+        teamId: Long,
+    ): Call<List<UserDTO>>
 }

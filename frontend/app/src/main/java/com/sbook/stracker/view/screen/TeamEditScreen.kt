@@ -28,9 +28,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.sbook.stracker.dto.user.UserDTO
-import com.sbook.stracker.entity.User
 import com.sbook.stracker.viewmodel.TeamEditViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -106,7 +104,7 @@ fun TeamEditScreen(
             ) {
                 itemsIndexed(editViewModel.usersList.value){ index, user ->
                     UserItem(user = user,
-                        isRemovable = user.id != editViewModel.ownerId,
+                        isRemovable = user.id != editViewModel.userId,
                         onRemove = {
                             editViewModel.removeUser(index)
                         },

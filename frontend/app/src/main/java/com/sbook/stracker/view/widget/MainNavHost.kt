@@ -5,12 +5,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.sbook.stracker.ViewModelFactoryProvider
-import com.sbook.stracker.dto.team.TeamResponseDTO
+import com.sbook.stracker.dto.team.TeamResponse
 import com.sbook.stracker.view.screen.LoginScreen
 import com.sbook.stracker.view.screen.ProfileScreen
 import com.sbook.stracker.view.screen.RegistrationScreen
@@ -74,7 +73,7 @@ fun MainNavHost(){
         }
         composable("team/{team}/tasks") { backStackEntry ->
             val teamString = backStackEntry.arguments?.getString("team")!!
-            val team = Json.decodeFromString<TeamResponseDTO>(teamString)
+            val team = Json.decodeFromString<TeamResponse>(teamString)
             TeamTasksScreen(
                 viewModel = remember { factoryProvider.teamTasksViewModelFactory()
                     .create(userViewModel.userId, team) },
@@ -84,7 +83,7 @@ fun MainNavHost(){
         }
         composable("team/{team}/new_task"){ backStackEntry ->
             val teamString = backStackEntry.arguments?.getString("team") ?: ""
-            val team = Json.decodeFromString<TeamResponseDTO>(teamString)
+            val team = Json.decodeFromString<TeamResponse>(teamString)
             TaskEditScreen(
                 viewModel = remember { factoryProvider.taskEditViewModelFactory()
                     .create(teamInit = team, userId = userViewModel.userId,) },

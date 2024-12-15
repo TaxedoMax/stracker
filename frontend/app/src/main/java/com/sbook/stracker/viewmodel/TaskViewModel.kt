@@ -4,9 +4,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.sbook.stracker.dto.TaskDTO
-import com.sbook.stracker.dto.team.TeamResponseDTO
+import com.sbook.stracker.dto.team.TeamGetRequest
+import com.sbook.stracker.dto.team.TeamResponse
 import com.sbook.stracker.dto.user.UserDTO
 import com.sbook.stracker.entity.TaskStatus
 import com.sbook.stracker.entity.TaskType
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class TaskViewModel @AssistedInject constructor(
     @Assisted
-    private val teamInit: TeamResponseDTO?,
+    private val teamInit: TeamResponse?,
     @Assisted("userId")
     val userId: Long,
     @Assisted("taskId")
@@ -55,7 +55,12 @@ class TaskViewModel @AssistedInject constructor(
                 try{
                     val currentTask = taskRepository.getTaskById(taskId)
                     task.value = currentTask!!.toTaskDTO()
-                    team.value = teamRepository.getTeamById(task.value.teamId)
+                    team.value = teamRepository.getTeamById(
+                        TeamGetRequest(
+                            userId = userId,
+                            teamId = task.value.teamId
+                        )
+                    )
                     owner.value = userRepository.getUserById(task.value.ownerId)
                     if(task.value.executorId != null){
                         executor.value = userRepository.getUserById(task.value.executorId!!)
@@ -144,7 +149,7 @@ class TaskViewModel @AssistedInject constructor(
     interface Factory {
         fun create(
             @Assisted
-            teamInit: TeamResponseDTO? = null,
+            teamInit: TeamResponse? = null,
             @Assisted("userId")
             userId: Long,
             @Assisted("taskId")
@@ -155,7 +160,7 @@ class TaskViewModel @AssistedInject constructor(
     companion object {
         fun provideFactory(
             assistedFactory: Factory,
-            teamInit: TeamResponseDTO?,
+            teamInit: TeamResponse?,
             userId: Long,
             taskId: Long?,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
