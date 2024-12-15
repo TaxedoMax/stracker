@@ -30,11 +30,11 @@ class UserViewModel @Inject constructor(
 
     fun setUserId(id: String){
         _userId = id
-        loadUser(id)
-        loadUserTasks(id)
+        loadUser()
+        loadUserTasks()
     }
 
-    private fun loadUser(userId: String) {
+    private fun loadUser() {
         viewModelScope.launch {
             isDataLoading.value = true
             user.value = userRepository.getUserById(userId)
@@ -42,7 +42,7 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    private fun loadUserTasks(userId: String) {
+    fun loadUserTasks() {
         viewModelScope.launch {
             isDataLoading.value = true
             userTasks.value = taskRepository.getTasksByUserId(userId)

@@ -143,7 +143,7 @@ fun TaskEditScreen(
 
             Button(
                 enabled = !viewModel.isLoading.value,
-                onClick = { viewModel.createTask(navigateBack) },
+                onClick = { viewModel.onAcceptPressed(navigateBack) },
             ) {
                 Text("Подтвердить")
             }

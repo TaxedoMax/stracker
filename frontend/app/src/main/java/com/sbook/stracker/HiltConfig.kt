@@ -1,8 +1,12 @@
 package com.sbook.stracker
 
+import com.sbook.stracker.entity.Team
 import com.sbook.stracker.repository.TaskRepository
 import com.sbook.stracker.repository.TeamRepository
 import com.sbook.stracker.repository.UserRepository
+import com.sbook.stracker.repository.impl.TaskRepositoryImpl
+import com.sbook.stracker.repository.impl.TeamRepositoryImpl
+import com.sbook.stracker.repository.impl.UserRepositoryImpl
 import com.sbook.stracker.repository.mock.InMemoryTaskRepository
 import com.sbook.stracker.repository.mock.InMemoryTeamRepository
 import com.sbook.stracker.repository.mock.InMemoryUserRepository
@@ -34,6 +38,11 @@ class UserModule {
     fun provideInMemoryUserRepository(inMemoryTeamRepository: InMemoryTeamRepository): InMemoryUserRepository {
         return InMemoryUserRepository(inMemoryTeamRepository)
     }
+    @Provides
+    @Singleton
+    fun provideUserRepositoryImpl(userRepositoryImpl: UserRepositoryImpl): UserRepositoryImpl{
+        return UserRepositoryImpl()
+    }
 }
 
 @InstallIn(SingletonComponent::class)
@@ -44,6 +53,11 @@ class TaskModule{
     fun provideInMemoryTaskRepository(): InMemoryTaskRepository{
         return  InMemoryTaskRepository()
     }
+    @Provides
+    @Singleton
+    fun provideTaskRepositoryImpl(taskRepositoryImpl: TaskRepositoryImpl): TaskRepositoryImpl{
+        return TaskRepositoryImpl()
+    }
 }
 @InstallIn(SingletonComponent::class)
 @Module
@@ -52,6 +66,11 @@ class TeamModule{
     @Singleton
     fun provideInMemoryTeamRepository(): InMemoryTeamRepository{
         return InMemoryTeamRepository()
+    }
+    @Provides
+    @Singleton
+    fun provideTeamRepositoryImpl(teamRepositoryImpl: TeamRepositoryImpl): TeamRepositoryImpl{
+        return TeamRepositoryImpl()
     }
 }
 @InstallIn(SingletonComponent::class)

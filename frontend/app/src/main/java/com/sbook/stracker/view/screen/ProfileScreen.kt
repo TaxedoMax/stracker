@@ -86,7 +86,7 @@ fun ProfileScreen(
                 // Список задач пользователя
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
                     items(userTasks.size) { index ->
-                        TaskItem(task = userTasks[index], navigateTo)
+                        TaskItem(task = userTasks[index], userId = user!!.id, navigateTo = navigateTo)
                     }
                 }
             }

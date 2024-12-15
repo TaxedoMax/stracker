@@ -1,7 +1,7 @@
 package com.sbook.stracker.repository.mock
 
 import com.sbook.stracker.dto.team.TeamCreateRequest
-import com.sbook.stracker.dto.team.EditTeamDTO
+import com.sbook.stracker.dto.team.TeamEditRequest
 import com.sbook.stracker.dto.team.TeamResponseDTO
 import com.sbook.stracker.entity.Team
 import com.sbook.stracker.repository.TeamRepository
@@ -31,7 +31,7 @@ class InMemoryTeamRepository : TeamRepository {
         return teamUsers[teamId] ?: emptyList()
     }
 
-    override fun getTeamById(id: String): Team? = teams.find { it.id == id }
+    override suspend fun getTeamById(id: String): Team? = teams.find { it.id == id }
     override suspend fun getTeamsByUserId(id: String): List<TeamResponseDTO> {
         delay(500)
 
@@ -50,7 +50,7 @@ class InMemoryTeamRepository : TeamRepository {
             }
     }
 
-    override fun createTeam(createTeamDTO: TeamCreateRequest): Boolean {
+    override suspend fun createTeam(createTeamDTO: TeamCreateRequest): Boolean {
         val id = (teams.size + 1).toString()
         val newTeam = Team(
             id = id,
@@ -62,7 +62,7 @@ class InMemoryTeamRepository : TeamRepository {
         return teams.add(newTeam)
     }
 
-    override fun updateTeam(team: EditTeamDTO): Boolean {
+    override suspend fun updateTeam(team: TeamEditRequest): Boolean {
         val index = teams.indexOfFirst { it.id == team.id }
         if (index == -1) return false
         teams[index] = teams[index].copy(name = team.name)
@@ -71,7 +71,7 @@ class InMemoryTeamRepository : TeamRepository {
         return true
     }
 
-    override fun deleteTeam(id: String): Boolean {
+    override suspend fun deleteTeam(id: String): Boolean {
         return teams.removeIf { it.id == id }
     }
 }

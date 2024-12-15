@@ -3,12 +3,14 @@ package com.sbook.stracker.view.screen
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -18,7 +20,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
@@ -61,7 +65,8 @@ fun TaskScreen(
                 .fillMaxSize()
                 .padding(padding)
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             // Заголовок задачи
             Text(
@@ -109,14 +114,27 @@ fun TaskScreen(
             Text(
                 text = viewModel.task.value.description,
                 style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.fillMaxWidth()
+                modifier = Modifier
+                    .fillMaxWidth(),
             )
-        }
 
-        if(viewModel.isLoading.value){
-            CircularProgressIndicator()
+            if(viewModel.isLoading.value){
+                CircularProgressIndicator(Modifier.weight(1F))
+            } else if(viewModel.executor.value == null){
+                Spacer(Modifier.weight(1F))
+                Button(onClick = { viewModel.setExecutor() }) {
+                    Text("Взять задачу")
+                }
+            } else if(viewModel.executor.value?.id == viewModel.userId){
+                Spacer(Modifier.weight(1F))
+                Button(onClick = { viewModel.removeExecutor() }) {
+                    Text(
+                        text = "Отказаться от задачи",
+                        color = Color.Red,
+                    )
+                }
+            }
         }
-
     }
 }
 

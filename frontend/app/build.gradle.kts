@@ -53,6 +53,9 @@ android {
 }
 
 dependencies {
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.5.0")
+    implementation("com.squareup.picasso:picasso:2.71828")
 
     implementation("com.google.dagger:dagger:2.49")
     implementation("androidx.appcompat:appcompat:1.7.0")

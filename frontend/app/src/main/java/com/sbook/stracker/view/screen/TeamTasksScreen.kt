@@ -78,7 +78,7 @@ fun TeamTasksScreen(
             } else{
                 LazyColumn(Modifier.weight(1F)) {
                     items(tasks){ task ->
-                        TaskItem(task = task, navigateTo = navigateTo)
+                        TaskItem(task = task, userId = viewModel.userId ,navigateTo = navigateTo)
                     }
                 }
             }

@@ -23,7 +23,7 @@ class TaskViewModel @AssistedInject constructor(
     @Assisted
     private val teamInit: TeamResponseDTO?,
     @Assisted("userId")
-    private val userId: String,
+    val userId: String,
     @Assisted("taskId")
     private val taskId: String?,
     private val taskRepository: TaskRepository,
@@ -67,7 +67,7 @@ class TaskViewModel @AssistedInject constructor(
             }
             // Не хватает инфы, какая-то ошибка
             else{
-                // TODO(Error)
+                TODO()
             }
 
             isLoading.value = false
@@ -87,14 +87,47 @@ class TaskViewModel @AssistedInject constructor(
         task.value = task.value.copy(status = newStatus)
     }
 
-    fun createTask(navigateBack: () -> Unit){
+    fun onAcceptPressed(navigateBack: () -> Unit){
+        if(taskId == null) createTask(navigateBack) else updateTask(navigateBack)
+    }
+    private fun createTask(navigateBack: () -> Unit){
         viewModelScope.launch {
             isLoading.value = true
             if(task.value.title.isNotEmpty() && task.value.description.isNotEmpty()){
                 taskRepository.addTask(task.value)
                 navigateBack()
             } else {
-                // TODO
+                TODO()
+            }
+            isLoading.value = false
+        }
+    }
+    fun setExecutor(){
+        viewModelScope.launch{
+            isLoading.value = true
+            task.value = task.value.copy(executorId = userId)
+            taskRepository.updateTask(task.value.toTask(taskId!!))
+            loadData()
+            isLoading.value = false
+        }
+    }
+    fun removeExecutor(){
+        viewModelScope.launch{
+            isLoading.value = true
+            task.value = task.value.copy(executorId = null)
+            taskRepository.updateTask(task.value.toTask(taskId!!))
+            loadData()
+            isLoading.value = false
+        }
+    }
+    private fun updateTask(navigateBack: () -> Unit) {
+        viewModelScope.launch {
+            isLoading.value = true
+            if(task.value.title.isNotEmpty() && task.value.description.isNotEmpty()){
+                taskRepository.updateTask(task.value.toTask(taskId!!))
+                navigateBack()
+            } else{
+                TODO()
             }
             isLoading.value = false
         }

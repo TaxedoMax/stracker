@@ -1,6 +1,6 @@
 package com.sbook.stracker.dto.user
 
-data class AuthDTO (
+data class AuthRequest (
     val login: String,
     val password: String
 )

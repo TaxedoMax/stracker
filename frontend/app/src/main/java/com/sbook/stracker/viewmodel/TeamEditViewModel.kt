@@ -4,11 +4,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import androidx.navigation.NavHostController
 import com.sbook.stracker.dto.team.TeamCreateRequest
-import com.sbook.stracker.dto.team.EditTeamDTO
+import com.sbook.stracker.dto.team.TeamEditRequest
 import com.sbook.stracker.dto.user.UserDTO
-import com.sbook.stracker.entity.User
 import com.sbook.stracker.repository.TeamRepository
 import com.sbook.stracker.repository.UserRepository
 import dagger.assisted.Assisted
@@ -130,7 +128,7 @@ class TeamEditViewModel @AssistedInject constructor(
             isDataLoading.value = true
 
             if(name.value.isNotEmpty()){
-                val teamDTO = EditTeamDTO(
+                val teamDTO = TeamEditRequest(
                     id = teamId!!,
                     name = name.value,
                     usersIdsList = usersList.value.map{ it.id }

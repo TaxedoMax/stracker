@@ -4,8 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
-import androidx.navigation.NavHostController
-import com.sbook.stracker.dto.user.AuthDTO
+import com.sbook.stracker.dto.user.AuthRequest
 import com.sbook.stracker.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -30,7 +29,7 @@ class AuthViewModel @Inject constructor(
     }
 
     fun loginUser(userViewModel: UserViewModel, navigateTo: (route: String) -> Unit) {
-        val authDTO = AuthDTO(login = login, password = password)
+        val authDTO = AuthRequest(login = login, password = password)
 
         val userId = userRepository.login(authDTO)
         if (userId != "-1") {
@@ -42,8 +41,8 @@ class AuthViewModel @Inject constructor(
     }
 
     fun registerUser(userViewModel: UserViewModel, navigateTo: (route: String) -> Unit) {
-        val authDTO = AuthDTO(login = login, password = password)
-        val userId = userRepository.registerUser(authDTO)
+        val authDTO = AuthRequest(login = login, password = password)
+        val userId = userRepository.register(authDTO)
 
         if (userId != "-1") {
             userViewModel.setUserId(userId)

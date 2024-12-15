@@ -49,6 +49,7 @@ fun MainNavHost(){
                 )
         }
         composable("profile") {
+            userViewModel.loadUserTasks()
             ProfileScreen(
                 userViewModel = remember { userViewModel },
                 navigateTo = navigateTo,
@@ -75,7 +76,8 @@ fun MainNavHost(){
             val teamString = backStackEntry.arguments?.getString("team") ?: ""
             val team = Json.decodeFromString<TeamResponseDTO>(teamString)
             TeamTasksScreen(
-                viewModel = remember { factoryProvider.teamTasksViewModelFactory().create(team) },
+                viewModel = remember { factoryProvider.teamTasksViewModelFactory()
+                    .create(userViewModel.userId, team) },
                 navigateTo = navigateTo,
                 navigateBack = navigateBack,
             )
@@ -86,6 +88,15 @@ fun MainNavHost(){
             TaskEditScreen(
                 viewModel = remember { factoryProvider.taskEditViewModelFactory()
                     .create(teamInit = team, userId = userViewModel.userId,) },
+                navigateTo = navigateTo,
+                navigateBack = navigateBack,
+            )
+        }
+        composable("task/{taskId}/edit"){ backStackEntry ->
+            val taskId = backStackEntry.arguments?.getString("taskId")!!
+            TaskEditScreen(
+                viewModel = factoryProvider.taskEditViewModelFactory()
+                    .create(userId = userViewModel.userId, taskId = taskId),
                 navigateTo = navigateTo,
                 navigateBack = navigateBack,
             )

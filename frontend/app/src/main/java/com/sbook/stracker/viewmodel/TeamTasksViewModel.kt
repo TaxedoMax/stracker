@@ -14,6 +14,8 @@ import kotlinx.coroutines.launch
 
 class TeamTasksViewModel @AssistedInject constructor(
     @Assisted
+    val userId: String,
+    @Assisted
     val team: TeamResponseDTO,
     private val taskRepository: TaskRepository
 ): ViewModel(){
@@ -33,16 +35,17 @@ class TeamTasksViewModel @AssistedInject constructor(
     }
     @AssistedFactory
     interface Factory{
-        fun create(team: TeamResponseDTO): TeamTasksViewModel
+        fun create(userId: String,team: TeamResponseDTO): TeamTasksViewModel
     }
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun provideFactory(
             assistedFactory: TeamTasksViewModel.Factory,
+            userId: String,
             team: TeamResponseDTO
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return assistedFactory.create(team) as T
+                return assistedFactory.create(userId, team) as T
             }
         }
     }
