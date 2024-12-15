@@ -7,7 +7,7 @@ import com.sbook.stracker.repository.TaskRepository
 
 class TaskRepositoryImpl : TaskRepository{
     private val api = RetrofitClient.taskApiService
-    override suspend fun getTaskById(id: String): Task? {
+    override suspend fun getTaskById(id: Long): Task? {
         TODO("Not yet implemented")
     }
 
@@ -19,15 +19,15 @@ class TaskRepositoryImpl : TaskRepository{
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteTask(id: String): Boolean {
+    override suspend fun deleteTask(id: Long): Boolean {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTasksByUserId(userId: String): List<Task> {
+    override suspend fun getTasksByUserId(userId: Long): List<Task> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTasksByTeamId(teamId: String): List<Task> {
+    override suspend fun getTasksByTeamId(teamId: Long): List<Task> {
         TODO("Not yet implemented")
     }
 

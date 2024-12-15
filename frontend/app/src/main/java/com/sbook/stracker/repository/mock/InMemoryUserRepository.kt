@@ -10,12 +10,12 @@ class InMemoryUserRepository @Inject constructor(
     ) : UserRepository {
 
     private val users = mutableListOf(
-        User(id = "1", login = "user1", password = "password1"),
-        User(id = "2", login = "user2", password = "password2"),
-        User(id = "3", login = "user3", password = "password3")
+        User(id = 1, login = "user1", password = "password1"),
+        User(id = 2, login = "user2", password = "password2"),
+        User(id = 3, login = "user3", password = "password3")
     )
 
-    override suspend fun getUserById(id: String): UserDTO? {
+    override suspend fun getUserById(id: Long): UserDTO? {
         val user = users.find { it.id == id }
         return if (user != null) UserDTO(id = user.id, login = user.login) else null
     }
@@ -25,7 +25,7 @@ class InMemoryUserRepository @Inject constructor(
         return if (user != null) UserDTO(id = user.id, login = user.login) else null
     }
 
-    override suspend fun getUsersByTeam(teamId: String): List<UserDTO> {
+    override suspend fun getUsersByTeam(teamId: Long): List<UserDTO> {
         val list: List<User> = teamRepository.getUsersByTeam(teamId).map{ userId ->
             users.find {user ->
                 user.id == userId
@@ -35,11 +35,11 @@ class InMemoryUserRepository @Inject constructor(
         return  list.map{ user -> UserDTO(id = user.id, login = user.login) }
     }
 
-    override suspend fun register(authDTO: AuthRequest): String {
-        var userId = "-1"
+    override suspend fun register(authDTO: AuthRequest): Long {
+        var userId: Long = -1
         if(getUserByLogin(authDTO.login) == null){
             val newUser = User(
-                id = (users.size + 1).toString(),
+                id = (users.size + 1).toLong(),
                 login = authDTO.login,
                 password = authDTO.password,
             )
@@ -56,9 +56,9 @@ class InMemoryUserRepository @Inject constructor(
         return true
     }
 
-    override suspend fun login(authDTO: AuthRequest): String {
+    override suspend fun login(authDTO: AuthRequest): Long {
         val existingUser = users.find { it.login == authDTO.login }
-        return if(existingUser == null || authDTO.password != existingUser.password) "-1"
+        return if(existingUser == null || authDTO.password != existingUser.password) -1L
         else existingUser.id
     }
 }

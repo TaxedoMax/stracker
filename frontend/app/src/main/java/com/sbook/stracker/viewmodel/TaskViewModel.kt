@@ -23,9 +23,9 @@ class TaskViewModel @AssistedInject constructor(
     @Assisted
     private val teamInit: TeamResponseDTO?,
     @Assisted("userId")
-    val userId: String,
+    val userId: Long,
     @Assisted("taskId")
-    private val taskId: String?,
+    private val taskId: Long?,
     private val taskRepository: TaskRepository,
     private val userRepository: UserRepository,
     private val teamRepository: TeamRepository,
@@ -52,11 +52,19 @@ class TaskViewModel @AssistedInject constructor(
 
             // Старая таска
             if(taskId != null){
-                val currentTask = taskRepository.getTaskById(taskId)
-                task.value = currentTask!!.toTaskDTO()
-                team.value = teamRepository.getTeamById(task.value.teamId)
-                owner.value = userRepository.getUserById(task.value.ownerId)
-                executor.value = userRepository.getUserById(task.value.executorId ?: "")
+                try{
+                    val currentTask = taskRepository.getTaskById(taskId)
+                    task.value = currentTask!!.toTaskDTO()
+                    team.value = teamRepository.getTeamById(task.value.teamId)
+                    owner.value = userRepository.getUserById(task.value.ownerId)
+                    if(task.value.executorId != null){
+                        executor.value = userRepository.getUserById(task.value.executorId!!)
+                    } else{
+                        executor.value = null
+                    }
+                } catch (e: Exception){
+                    println("TaskViewModelInitError: ${e.message}")
+                }
             }
             // Новая таска
             else if(teamInit != null){
@@ -138,9 +146,9 @@ class TaskViewModel @AssistedInject constructor(
             @Assisted
             teamInit: TeamResponseDTO? = null,
             @Assisted("userId")
-            userId: String,
+            userId: Long,
             @Assisted("taskId")
-            taskId: String? = null,
+            taskId: Long? = null,
         ): TaskViewModel
     }
     @Suppress("UNCHECKED_CAST")
@@ -148,8 +156,8 @@ class TaskViewModel @AssistedInject constructor(
         fun provideFactory(
             assistedFactory: Factory,
             teamInit: TeamResponseDTO?,
-            userId: String,
-            taskId: String?,
+            userId: Long,
+            taskId: Long?,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return assistedFactory.create(teamInit, userId, taskId) as T

@@ -4,9 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.sbook.stracker.dto.user.AuthRequest
 import com.sbook.stracker.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,6 +22,8 @@ class AuthViewModel @Inject constructor(
     var errorMessage by mutableStateOf("")
         private set
 
+    var isLoading by mutableStateOf(false)
+
     fun onLoginChanged(newLogin: String) {
         login = newLogin
     }
@@ -29,26 +33,35 @@ class AuthViewModel @Inject constructor(
     }
 
     fun loginUser(userViewModel: UserViewModel, navigateTo: (route: String) -> Unit) {
-        val authDTO = AuthRequest(login = login, password = password)
-
-        val userId = userRepository.login(authDTO)
-        if (userId != "-1") {
-            userViewModel.setUserId(userId)
-            navigateTo("teams")
-        } else {
-            errorMessage = "Неверный логин или пароль"
+        viewModelScope.launch {
+            isLoading = true
+            val authDTO = AuthRequest(login = login, password = password)
+            val userId = userRepository.login(authDTO)
+            if (userId != -1L) {
+                userViewModel.setUserId(userId)
+                navigateTo("teams")
+            } else {
+                errorMessage = "Неверный логин или пароль"
+            }
+            isLoading = false
         }
     }
 
     fun registerUser(userViewModel: UserViewModel, navigateTo: (route: String) -> Unit) {
-        val authDTO = AuthRequest(login = login, password = password)
-        val userId = userRepository.register(authDTO)
+        viewModelScope.launch {
+            isLoading = true
 
-        if (userId != "-1") {
-            userViewModel.setUserId(userId)
-            navigateTo("teams")
-        } else {
-            errorMessage = "Пользователь уже существует"
+            val authDTO = AuthRequest(login = login, password = password)
+            val userId = userRepository.register(authDTO)
+
+            if (userId != -1L) {
+                userViewModel.setUserId(userId)
+                navigateTo("teams")
+            } else {
+                errorMessage = "Пользователь уже существует"
+            }
+
+            isLoading = false
         }
     }
 }

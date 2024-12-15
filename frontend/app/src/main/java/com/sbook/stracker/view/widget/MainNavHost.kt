@@ -64,16 +64,16 @@ fun MainNavHost(){
                 )
         }
         composable("team/{teamId}/edit"){navBackStackEntry ->
-            val teamId = navBackStackEntry.arguments?.getString("teamId") ?: ""
+            val teamId = navBackStackEntry.arguments?.getString("teamId") ?: "-1"
             TeamEditScreen(
                 editViewModel = remember { factoryProvider.teamEditViewModelFactory()
-                    .create(userViewModel.userId, teamId) },
+                    .create(userViewModel.userId, teamId.toLong()) },
                 navigateTo = navigateTo,
                 navigateBack = navigateBack,
             )
         }
         composable("team/{team}/tasks") { backStackEntry ->
-            val teamString = backStackEntry.arguments?.getString("team") ?: ""
+            val teamString = backStackEntry.arguments?.getString("team")!!
             val team = Json.decodeFromString<TeamResponseDTO>(teamString)
             TeamTasksScreen(
                 viewModel = remember { factoryProvider.teamTasksViewModelFactory()
@@ -96,16 +96,16 @@ fun MainNavHost(){
             val taskId = backStackEntry.arguments?.getString("taskId")!!
             TaskEditScreen(
                 viewModel = factoryProvider.taskEditViewModelFactory()
-                    .create(userId = userViewModel.userId, taskId = taskId),
+                    .create(userId = userViewModel.userId, taskId = taskId.toLong()),
                 navigateTo = navigateTo,
                 navigateBack = navigateBack,
             )
         }
         composable("task/{taskId}") { backStackEntry ->
-            val taskId = backStackEntry.arguments?.getString("taskId") ?: ""
+            val taskId = backStackEntry.arguments?.getString("taskId")!!
             TaskScreen(
                 viewModel = remember { factoryProvider.taskEditViewModelFactory()
-                    .create(userId = userViewModel.userId, taskId = taskId) },
+                    .create(userId = userViewModel.userId, taskId = taskId.toLong()) },
                 navigateTo = navigateTo,
                 navigateBack = navigateBack,
             )

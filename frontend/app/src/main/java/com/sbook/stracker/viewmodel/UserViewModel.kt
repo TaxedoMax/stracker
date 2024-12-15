@@ -19,8 +19,8 @@ class UserViewModel @Inject constructor(
     private val taskRepository: TaskRepository
 ) : ViewModel() {
 
-    private var _userId: String = "-1"
-    val userId: String get() = _userId
+    private var _userId: Long = -1
+    val userId: Long get() = _userId
 
     val user = mutableStateOf<UserDTO?>(null)
     val userTasks = mutableStateOf<List<Task>>(emptyList())
@@ -28,7 +28,7 @@ class UserViewModel @Inject constructor(
     val isDataLoading = mutableStateOf(false)
 
 
-    fun setUserId(id: String){
+    fun setUserId(id: Long){
         _userId = id
         loadUser()
         loadUserTasks()

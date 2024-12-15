@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class TeamResponseDTO(
-    val id: String,
+    val id: Long,
     val name: String,
     val isOwner: Boolean
 )

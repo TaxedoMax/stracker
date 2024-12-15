@@ -18,9 +18,9 @@ class TeamEditViewModel @AssistedInject constructor(
     private val teamRepository: TeamRepository,
     private val userRepository: UserRepository,
     @Assisted("userId")
-    val ownerId: String,
+    val ownerId: Long,
     @Assisted("teamId")
-    val teamId: String?,
+    val teamId: Long?,
 ) : ViewModel(){
     val name = mutableStateOf("")
 
@@ -147,17 +147,17 @@ class TeamEditViewModel @AssistedInject constructor(
     interface Factory {
         fun create(
             @Assisted("userId")
-            userId: String,
+            userId: Long,
             @Assisted("teamId")
-            teamId: String?,
+            teamId: Long?,
             ): TeamEditViewModel
     }
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun provideFactory(
             assistedFactory: Factory,
-            userId: String,
-            teamId: String?,
+            userId: Long,
+            teamId: Long?,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return assistedFactory.create(userId, teamId) as T

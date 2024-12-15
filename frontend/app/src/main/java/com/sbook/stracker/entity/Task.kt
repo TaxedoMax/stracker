@@ -3,10 +3,10 @@ package com.sbook.stracker.entity
 import com.sbook.stracker.dto.TaskDTO
 
 data class Task(
-    val id: String,
-    val teamId: String,
-    val ownerId: String,
-    val executorId: String?,
+    val id: Long,
+    val teamId: Long,
+    val ownerId: Long,
+    val executorId: Long?,
     val title: String,
     val description: String,
     val status: TaskStatus,
@@ -26,16 +26,16 @@ data class Task(
 }
 
 enum class TaskStatus(val text: String){
-    OPEN("Открытая"),
-    CLOSE("Закрытая"),
-    IN_PROGRESS("В процессе"),
+    OPEN("Открыта"),
+    CLOSE("Закрыта"),
+    IN_PROGRESS("В работе"),
     NEED_INFORMATION("Требуется информация"),
     ON_CHECK("На проверке"),
 }
 
 enum class TaskType(val text: String){
-    HANDMADE("Хз, рукодельная"),
+    HANDMADE("Не придумал"),
     BUYING("Покупка"),
-    CREATION("Сотворение"),
+    CREATION("Создание"),
     TASK("Задача"),
 }

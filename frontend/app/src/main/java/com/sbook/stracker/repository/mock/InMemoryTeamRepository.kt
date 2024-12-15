@@ -11,31 +11,31 @@ class InMemoryTeamRepository : TeamRepository {
 
     private val teams = mutableListOf(
         Team(
-            id = "1",
+            id = 1,
             name = "Team Alpha",
-            adminId = "1"
+            adminId = 1
         ),
         Team(
-            id = "2",
+            id = 2,
             name = "Team Beta",
-            adminId = "2"
+            adminId = 2
         )
     )
 
-    private val teamUsers: MutableMap<String, MutableList<String>> = mutableMapOf(
-        "1" to mutableListOf("1", "2"),
-        "2" to mutableListOf("2", "3"),
+    private val teamUsers: MutableMap<Long, MutableList<Long>> = mutableMapOf(
+        1L to mutableListOf(1, 2),
+        2L to mutableListOf(2, 3),
     )
 
-    fun getUsersByTeam(teamId: String): List<String> {
+    fun getUsersByTeam(teamId: Long): List<Long> {
         return teamUsers[teamId] ?: emptyList()
     }
 
-    override suspend fun getTeamById(id: String): Team? = teams.find { it.id == id }
-    override suspend fun getTeamsByUserId(id: String): List<TeamResponseDTO> {
+    override suspend fun getTeamById(id: Long): Team? = teams.find { it.id == id }
+    override suspend fun getTeamsByUserId(id: Long): List<TeamResponseDTO> {
         delay(500)
 
-        val tmpTeams: ArrayList<String> = arrayListOf()
+        val tmpTeams: ArrayList<Long> = arrayListOf()
         teamUsers.forEach {
             if(it.value.contains(id)) tmpTeams.add(it.key)
         }
@@ -51,7 +51,7 @@ class InMemoryTeamRepository : TeamRepository {
     }
 
     override suspend fun createTeam(createTeamDTO: TeamCreateRequest): Boolean {
-        val id = (teams.size + 1).toString()
+        val id = (teams.size + 1).toLong()
         val newTeam = Team(
             id = id,
             name = createTeamDTO.name,
@@ -71,7 +71,7 @@ class InMemoryTeamRepository : TeamRepository {
         return true
     }
 
-    override suspend fun deleteTeam(id: String): Boolean {
+    override suspend fun deleteTeam(id: Long): Boolean {
         return teams.removeIf { it.id == id }
     }
 }

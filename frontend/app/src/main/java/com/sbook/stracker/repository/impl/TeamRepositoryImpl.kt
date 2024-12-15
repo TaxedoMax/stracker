@@ -9,11 +9,11 @@ import com.sbook.stracker.repository.TeamRepository
 
 class TeamRepositoryImpl: TeamRepository {
     private val api = RetrofitClient.teamApiService
-    override suspend fun getTeamById(id: String): Team? {
+    override suspend fun getTeamById(id: Long): Team? {
         TODO("Not yet implemented")
     }
 
-    override suspend fun getTeamsByUserId(id: String): List<TeamResponseDTO> {
+    override suspend fun getTeamsByUserId(id: Long): List<TeamResponseDTO> {
         TODO("Not yet implemented")
     }
 
@@ -25,7 +25,7 @@ class TeamRepositoryImpl: TeamRepository {
         TODO("Not yet implemented")
     }
 
-    override suspend fun deleteTeam(id: String): Boolean {
+    override suspend fun deleteTeam(id: Long): Boolean {
         TODO("Not yet implemented")
     }
 

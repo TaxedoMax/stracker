@@ -14,7 +14,7 @@ import kotlinx.coroutines.launch
 class TeamsViewModel @AssistedInject constructor(
     private val teamRepository: TeamRepository,
     @Assisted
-    private val userId: String,
+    private val userId: Long,
 ) : ViewModel() {
 
     private val _isDataLoading = mutableStateOf(false)
@@ -35,13 +35,13 @@ class TeamsViewModel @AssistedInject constructor(
 
     @AssistedFactory
     interface Factory {
-        fun create(userId: String): TeamsViewModel
+        fun create(userId: Long): TeamsViewModel
     }
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun provideFactory(
             assistedFactory: Factory,
-            userId: String
+            userId: Long
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return assistedFactory.create(userId) as T

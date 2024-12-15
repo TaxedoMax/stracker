@@ -23,7 +23,7 @@ import androidx.navigation.NavHostController
 import com.sbook.stracker.entity.Task
 
 @Composable
-fun TaskItem(task: Task, userId: String, navigateTo: (route: String) -> Unit) {
+fun TaskItem(task: Task, userId: Long, navigateTo: (route: String) -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
