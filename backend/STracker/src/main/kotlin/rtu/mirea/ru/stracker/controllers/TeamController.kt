@@ -94,6 +94,8 @@ class TeamController(
     ): Team {
         try {
             return teamService.editTeam(request)
+        } catch (e: EntityNotFoundException){
+            throw ResponseStatusException(HttpStatus.NOT_FOUND,e.message)
         } catch (e: Exception){
             throw ResponseStatusException(HttpStatus.BAD_REQUEST,e.message)
         }

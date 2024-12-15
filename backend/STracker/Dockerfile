@@ -12,7 +12,7 @@ FROM openjdk:21-jdk-slim
 
 WORKDIR /stracker
 
-COPY --from=build /app/build/libs/ssbes-0.0.1-SNAPSHOT.jar ./application.jar
+COPY --from=build /app/build/libs/STracker-0.0.1-SNAPSHOT.jar ./application.jar
 
 EXPOSE 8888
 

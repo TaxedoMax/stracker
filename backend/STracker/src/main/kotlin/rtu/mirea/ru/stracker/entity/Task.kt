@@ -5,10 +5,10 @@ import jakarta.persistence.*
 @Entity
 @Table(name = "tasks")
 class Task(
-    val name: String = "name",
+    var name: String = "name",
     val status: TaskStatus = TaskStatus.OPEN,
-    val type: TaskType = TaskType.TASK,
-    val description: String? = null,
+    var type: TaskType = TaskType.TASK,
+    var description: String? = null,
     @Column(name = "author_id")
     val authorId: Long = 0,
     @Column(name = "executor_id")
