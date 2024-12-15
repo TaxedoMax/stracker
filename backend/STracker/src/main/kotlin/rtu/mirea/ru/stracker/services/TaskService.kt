@@ -1,8 +1,11 @@
 package rtu.mirea.ru.stracker.services
 
+import jakarta.persistence.EntityNotFoundException
+import jakarta.transaction.Transactional
 import org.springframework.stereotype.Service
 import rtu.mirea.ru.stracker.DTO.task.CreateTaskRequest
 import rtu.mirea.ru.stracker.DTO.task.CreateTaskResponse
+import rtu.mirea.ru.stracker.DTO.task.EditTaskRequest
 import rtu.mirea.ru.stracker.entity.Task
 import rtu.mirea.ru.stracker.entity.TaskStatus
 import rtu.mirea.ru.stracker.entity.TaskType
@@ -67,5 +70,36 @@ class TaskService(
         if (errors.isNotEmpty()) {
             throw IllegalArgumentException(errors.joinToString(separator = "; "))
         }
+    }
+
+    @Transactional
+    fun editTask(request: EditTaskRequest): Task{
+        val task = taskRepository.findById(request.taskId).orElse(null) ?: throw EntityNotFoundException("Таска не найдена")
+        if (!utils.isUserInTeam(task.teamId, request.editorId)){
+            throw IllegalArgumentException("Пользователь, пытающийся изменить таску, не состоит в команде")
+        }
+        task.name = request.name
+        task.type = request.type
+        task.description = request.description
+        val userId = utils.takeIdByLogin(request.executorLogin)
+        if (!utils.isUserExistById(userId)) {
+            throw EntityNotFoundException("Пользователь не найдена")
+        }
+        if (!utils.isUserInTeam(task.teamId, userId)){
+            throw IllegalArgumentException("Пользователь не в команде")
+        } else {
+            task.executorId = userId
+        }
+        taskRepository.save(task)
+
+        return task
+    }
+
+    fun getTask(id: Long): Task{
+        return taskRepository.findById(id).get() ?: throw EntityNotFoundException("Таски с таким id не существует")
+    }
+
+    fun getTasksByTeam(id: Long): List<Task>{
+        return taskRepository.findAllByTeamId(id)
     }
 }
