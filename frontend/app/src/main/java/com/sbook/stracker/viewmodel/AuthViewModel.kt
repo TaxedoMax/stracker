@@ -51,14 +51,18 @@ class AuthViewModel @Inject constructor(
         viewModelScope.launch {
             isLoading = true
 
-            val authDTO = AuthRequest(login = login, password = password)
-            val userId = userRepository.register(authDTO)
+            if(login.isNotEmpty() && password.isNotEmpty()){
+                val authDTO = AuthRequest(login = login, password = password)
+                val userId = userRepository.register(authDTO)
 
-            if (userId != -1L) {
-                userViewModel.setUserId(userId)
-                navigateTo("teams")
-            } else {
-                errorMessage = "Пользователь уже существует"
+                if (userId != -1L) {
+                    userViewModel.setUserId(userId)
+                    navigateTo("teams")
+                } else {
+                    errorMessage = "Пользователь уже существует"
+                }
+            } else{
+                errorMessage = "Введите логин и пароль!"
             }
 
             isLoading = false

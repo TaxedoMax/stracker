@@ -4,6 +4,7 @@ import com.sbook.stracker.dto.TaskDTO
 import com.sbook.stracker.entity.Task
 import retrofit2.Call
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -31,5 +32,11 @@ interface TaskApiService {
     fun createTask(
         @Body
         task: TaskDTO
-    )
+    ): Call<Boolean>
+
+    @DELETE("/task/{taskId}")
+    fun deleteTask(
+        @Path("taskId")
+        taskId: Long,
+    ): Call<Boolean>
 }

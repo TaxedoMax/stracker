@@ -40,7 +40,7 @@ class UserModule {
     }
     @Provides
     @Singleton
-    fun provideUserRepositoryImpl(userRepositoryImpl: UserRepositoryImpl): UserRepositoryImpl{
+    fun provideUserRepositoryImpl(): UserRepositoryImpl{
         return UserRepositoryImpl()
     }
 }
@@ -55,7 +55,7 @@ class TaskModule{
     }
     @Provides
     @Singleton
-    fun provideTaskRepositoryImpl(taskRepositoryImpl: TaskRepositoryImpl): TaskRepositoryImpl{
+    fun provideTaskRepositoryImpl(): TaskRepositoryImpl{
         return TaskRepositoryImpl()
     }
 }
@@ -69,7 +69,7 @@ class TeamModule{
     }
     @Provides
     @Singleton
-    fun provideTeamRepositoryImpl(teamRepositoryImpl: TeamRepositoryImpl): TeamRepositoryImpl{
+    fun provideTeamRepositoryImpl(): TeamRepositoryImpl{
         return TeamRepositoryImpl()
     }
 }
@@ -77,9 +77,9 @@ class TeamModule{
 @Module
 abstract class BindingModule{
     @Binds
-    abstract fun bindUserRepository(inMemoryUserRepository: InMemoryUserRepository): UserRepository
+    abstract fun bindUserRepository(userRepository: UserRepositoryImpl): UserRepository
     @Binds
-    abstract fun bindTaskRepository(inMemoryTaskRepository: InMemoryTaskRepository): TaskRepository
+    abstract fun bindTaskRepository(taskRepository: TaskRepositoryImpl): TaskRepository
     @Binds
-    abstract fun bindTeamRepository(inMemoryTeamRepository: InMemoryTeamRepository): TeamRepository
+    abstract fun bindTeamRepository(teamRepository: TeamRepositoryImpl): TeamRepository
 }
