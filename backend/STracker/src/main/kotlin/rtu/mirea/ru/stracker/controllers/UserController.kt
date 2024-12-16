@@ -9,6 +9,7 @@ import rtu.mirea.ru.stracker.DTO.user.CreateUserRequest
 import rtu.mirea.ru.stracker.DTO.user.CreateUserResponse
 import rtu.mirea.ru.stracker.DTO.user.LoginUserRequest
 import rtu.mirea.ru.stracker.entity.Task
+import rtu.mirea.ru.stracker.entity.User
 import rtu.mirea.ru.stracker.services.TeamService
 import rtu.mirea.ru.stracker.services.UserService
 import rtu.mirea.ru.stracker.services.Utils
@@ -20,6 +21,34 @@ class UserController(
     val teamService: TeamService,
     private val utils: Utils,
 ) {
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun login(
+        @RequestBody loginUserRequest: LoginUserRequest
+    ): Long {
+        try {
+            return userService.login(loginUserRequest)
+        } catch (e: EntityNotFoundException){
+            throw ResponseStatusException(HttpStatus.NOT_FOUND,e.message)
+        } catch (e: Exception){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST,e.message)
+        }
+    }
+
+    @PostMapping("/auth")
+    @ResponseStatus(HttpStatus.CREATED)
+    fun authenticate(
+        @RequestBody loginUserRequest: LoginUserRequest
+    ): Boolean {
+        try {
+            return userService.auth(loginUserRequest)
+        } catch (e: EntityNotFoundException){
+            throw ResponseStatusException(HttpStatus.NOT_FOUND,e.message)
+        } catch (e: Exception){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST,e.message)
+        }
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun addUser(
@@ -76,11 +105,11 @@ class UserController(
         }
     }
 
-    @GetMapping("/{login}/id")
+    @GetMapping("/{login}/login")
     @ResponseStatus(HttpStatus.OK)
     fun getIdByLogin(
         @PathVariable login: String,
-    ): Long {
+    ): User {
         try {
             return userService.getIdByLogin(login)
         } catch (e: EntityNotFoundException){
@@ -90,11 +119,11 @@ class UserController(
         }
     }
 
-    @GetMapping("/{id}/login")
+    @GetMapping("/{id}/id")
     @ResponseStatus(HttpStatus.OK)
     fun getLoginByUserId(
         @PathVariable id: Long,
-    ): String {
+    ): User {
         try {
             return userService.getLoginByUserId(id)
         } catch (e: EntityNotFoundException){
