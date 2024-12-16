@@ -7,6 +7,7 @@ import org.springframework.web.server.ResponseStatusException
 import rtu.mirea.ru.stracker.DTO.user.GetTeamsResponse
 import rtu.mirea.ru.stracker.DTO.user.CreateUserRequest
 import rtu.mirea.ru.stracker.DTO.user.CreateUserResponse
+import rtu.mirea.ru.stracker.DTO.user.LoginUserRequest
 import rtu.mirea.ru.stracker.entity.Task
 import rtu.mirea.ru.stracker.services.TeamService
 import rtu.mirea.ru.stracker.services.UserService
@@ -68,6 +69,34 @@ class UserController(
     ): List<Task> {
         try {
             return teamService.getTasks(id)
+        } catch (e: EntityNotFoundException){
+            throw ResponseStatusException(HttpStatus.NOT_FOUND,e.message)
+        } catch (e: Exception){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST,e.message)
+        }
+    }
+
+    @GetMapping("/{login}/user")
+    @ResponseStatus(HttpStatus.OK)
+    fun getIdByLogin(
+        @PathVariable login: String,
+    ): Long {
+        try {
+            return userService.getIdByLogin(login)
+        } catch (e: EntityNotFoundException){
+            throw ResponseStatusException(HttpStatus.NOT_FOUND,e.message)
+        } catch (e: Exception){
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST,e.message)
+        }
+    }
+
+    @GetMapping("/{id}/user")
+    @ResponseStatus(HttpStatus.OK)
+    fun getLoginByUserId(
+        @PathVariable id: Long,
+    ): String {
+        try {
+            return userService.getLoginByUserId(id)
         } catch (e: EntityNotFoundException){
             throw ResponseStatusException(HttpStatus.NOT_FOUND,e.message)
         } catch (e: Exception){
