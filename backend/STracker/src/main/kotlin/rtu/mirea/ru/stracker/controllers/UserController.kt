@@ -76,7 +76,7 @@ class UserController(
         }
     }
 
-    @GetMapping("/{login}/user")
+    @GetMapping("/{login}/id")
     @ResponseStatus(HttpStatus.OK)
     fun getIdByLogin(
         @PathVariable login: String,
@@ -90,7 +90,7 @@ class UserController(
         }
     }
 
-    @GetMapping("/{id}/user")
+    @GetMapping("/{id}/login")
     @ResponseStatus(HttpStatus.OK)
     fun getLoginByUserId(
         @PathVariable id: Long,
