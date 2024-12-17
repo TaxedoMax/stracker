@@ -45,13 +45,19 @@ class TeamController(
         }
     }
 
-    @GetMapping
+    @GetMapping("/{teamId}/{userId}")
     @ResponseStatus(HttpStatus.OK)
     fun getTeams(
-        @RequestBody request: GetTeamRequest
+        @RequestParam(value = "teamId") teamId: Long,
+        @RequestParam(value = "userId") userId: Long,
     ): GetTeamResponse {
         try {
-            return teamService.getTeam(request)
+            return teamService.getTeam(
+                GetTeamRequest(
+                    teamId = teamId,
+                    userId = userId,
+                )
+            )
         } catch (e: EntityNotFoundException){
             throw ResponseStatusException(HttpStatus.NOT_FOUND,e.message)
         } catch (e: Exception){

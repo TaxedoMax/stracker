@@ -9,6 +9,6 @@ data class EditTaskRequest(
     val name: String,
     val status: TaskStatus,
     val type: TaskType,
-    val description: String,
-    val executorLogin: String,
+    val description: String?,
+    val executorLogin: String?,
 )

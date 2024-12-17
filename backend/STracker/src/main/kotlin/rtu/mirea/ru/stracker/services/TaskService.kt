@@ -81,14 +81,18 @@ class TaskService(
         task.name = request.name
         task.type = request.type
         task.description = request.description
-        val userId = utils.takeIdByLogin(request.executorLogin)
-        if (!utils.isUserExistById(userId)) {
-            throw EntityNotFoundException("Пользователь не найдена")
-        }
-        if (!utils.isUserInTeam(task.teamId, userId)){
-            throw IllegalArgumentException("Пользователь не в команде")
+        if (request.executorLogin != null){
+            val userId = utils.takeIdByLogin(request.executorLogin)
+            if (!utils.isUserExistById(userId)) {
+                throw EntityNotFoundException("Пользователь не найдена")
+            }
+            if (!utils.isUserInTeam(task.teamId, userId)){
+                throw IllegalArgumentException("Пользователь не в команде")
+            } else {
+                task.executorId = userId
+            }
         } else {
-            task.executorId = userId
+            task.executorId = null
         }
         taskRepository.save(task)
 
