@@ -1,6 +1,6 @@
 package com.sbook.stracker.dto.team
 
-data class TeamEditRequest(
+data class TeamEditDTO(
     val id: Long,
     val name: String,
     val usersIdsList: List<Long>

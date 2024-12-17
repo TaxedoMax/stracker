@@ -32,7 +32,7 @@ interface TaskApiService {
     fun createTask(
         @Body
         task: TaskDTO
-    ): Call<Boolean>
+    ): Call<Task>
 
     @DELETE("/task/{taskId}")
     fun deleteTask(

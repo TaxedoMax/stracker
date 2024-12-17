@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.sbook.stracker.dto.TaskDTO
-import com.sbook.stracker.dto.team.TeamGetRequest
-import com.sbook.stracker.dto.team.TeamResponse
+import com.sbook.stracker.dto.team.GetTeamByIdRequest
+import com.sbook.stracker.dto.team.GetTeamByIdResponse
 import com.sbook.stracker.dto.user.UserDTO
 import com.sbook.stracker.entity.TaskStatus
 import com.sbook.stracker.entity.TaskType
@@ -21,7 +21,7 @@ import kotlinx.coroutines.launch
 
 class TaskViewModel @AssistedInject constructor(
     @Assisted
-    private val teamInit: TeamResponse?,
+    private val teamInit: GetTeamByIdResponse?,
     @Assisted("userId")
     val userId: Long,
     @Assisted("taskId")
@@ -56,12 +56,12 @@ class TaskViewModel @AssistedInject constructor(
                     val currentTask = taskRepository.getTaskById(taskId)
                     task.value = currentTask!!.toTaskDTO()
                     team.value = teamRepository.getTeamById(
-                        TeamGetRequest(
+                        GetTeamByIdRequest(
                             userId = userId,
                             teamId = task.value.teamId
                         )
                     )
-                    owner.value = userRepository.getUserById(task.value.ownerId)
+                    owner.value = userRepository.getUserById(task.value.authorId)
                     if(task.value.executorId != null){
                         executor.value = userRepository.getUserById(task.value.executorId!!)
                     } else{
@@ -75,7 +75,7 @@ class TaskViewModel @AssistedInject constructor(
             else if(teamInit != null){
                 task.value = task.value.copy(
                     teamId = teamInit.id,
-                    ownerId = userId,
+                    authorId = userId,
                 )
             }
             // Не хватает инфы, какая-то ошибка
@@ -149,7 +149,7 @@ class TaskViewModel @AssistedInject constructor(
     interface Factory {
         fun create(
             @Assisted
-            teamInit: TeamResponse? = null,
+            teamInit: GetTeamByIdResponse? = null,
             @Assisted("userId")
             userId: Long,
             @Assisted("taskId")
@@ -160,7 +160,7 @@ class TaskViewModel @AssistedInject constructor(
     companion object {
         fun provideFactory(
             assistedFactory: Factory,
-            teamInit: TeamResponse?,
+            teamInit: GetTeamByIdResponse?,
             userId: Long,
             taskId: Long?,
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {

@@ -18,8 +18,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.sbook.stracker.entity.Task
 
 @Composable
@@ -47,7 +45,7 @@ fun TaskItem(task: Task, userId: Long, navigateTo: (route: String) -> Unit) {
                 )
             }
 
-            if(userId == task.ownerId) IconButton(onClick = { navigateTo("task/${task.id}/edit") }) {
+            if(userId == task.authorId) IconButton(onClick = { navigateTo("task/${task.id}/edit") }) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Редактировать задачу"

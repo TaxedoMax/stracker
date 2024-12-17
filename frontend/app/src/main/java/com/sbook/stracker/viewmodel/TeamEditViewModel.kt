@@ -4,9 +4,9 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.sbook.stracker.dto.team.TeamCreateRequest
-import com.sbook.stracker.dto.team.TeamEditRequest
-import com.sbook.stracker.dto.team.TeamGetRequest
+import com.sbook.stracker.dto.team.NewTeamDTO
+import com.sbook.stracker.dto.team.TeamEditDTO
+import com.sbook.stracker.dto.team.GetTeamByIdRequest
 import com.sbook.stracker.dto.user.UserDTO
 import com.sbook.stracker.repository.TeamRepository
 import com.sbook.stracker.repository.UserRepository
@@ -46,7 +46,7 @@ class TeamEditViewModel @AssistedInject constructor(
             isDataLoading.value = true
 
             val team = teamRepository.getTeamById(
-                TeamGetRequest(
+                GetTeamByIdRequest(
                     userId = userId,
                     teamId = teamId!!
                 )
@@ -112,7 +112,7 @@ class TeamEditViewModel @AssistedInject constructor(
             isDataLoading.value = true
 
             if(name.value.isNotEmpty()){
-                val teamDTO = TeamCreateRequest(
+                val teamDTO = NewTeamDTO(
                     name = name.value,
                     adminId = userId,
                     usersIdsList = usersList.value.map{ it.id }
@@ -133,7 +133,7 @@ class TeamEditViewModel @AssistedInject constructor(
             isDataLoading.value = true
 
             if(name.value.isNotEmpty()){
-                val teamDTO = TeamEditRequest(
+                val teamDTO = TeamEditDTO(
                     id = teamId!!,
                     name = name.value,
                     usersIdsList = usersList.value.map{ it.id }

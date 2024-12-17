@@ -1,12 +1,16 @@
 package com.sbook.stracker.entity
 
 import com.sbook.stracker.dto.TaskDTO
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Task(
     val id: Long,
     val teamId: Long,
-    val ownerId: Long,
+    val authorId: Long,
     val executorId: Long?,
+    @SerialName("name")
     val title: String,
     val description: String,
     val status: TaskStatus,
@@ -15,7 +19,7 @@ data class Task(
     fun toTaskDTO(): TaskDTO {
         return TaskDTO(
             teamId = teamId,
-            ownerId = ownerId,
+            authorId = authorId,
             executorId = executorId,
             title = title,
             description = description,

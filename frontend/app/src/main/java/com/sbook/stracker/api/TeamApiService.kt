@@ -1,9 +1,10 @@
 package com.sbook.stracker.api
 
-import com.sbook.stracker.dto.team.TeamCreateRequest
-import com.sbook.stracker.dto.team.TeamEditRequest
-import com.sbook.stracker.dto.team.TeamResponse
+import com.sbook.stracker.dto.team.NewTeamDTO
+import com.sbook.stracker.dto.team.TeamEditDTO
+import com.sbook.stracker.dto.team.TeamListResponse
 import com.sbook.stracker.dto.user.AddUserRequest
+import com.sbook.stracker.dto.user.RemoveUserRequest
 import com.sbook.stracker.entity.Team
 import retrofit2.Call
 import retrofit2.http.Body
@@ -19,7 +20,7 @@ interface TeamApiService {
     fun getTeamsByUserId(
         @Path("userId")
         userId: Long,
-    ): Call<List<TeamResponse>>
+    ): Call<TeamListResponse>
 
     @GET("/team")
     fun getTeam(
@@ -32,26 +33,26 @@ interface TeamApiService {
     @POST("/team")
     fun createTeam(
         @Body
-        createRequest: TeamCreateRequest
+        createRequest: NewTeamDTO
     ): Call<Team>
 
     @PUT("/team")
     fun updateTeam(
         @Body
-        updateRequest: TeamEditRequest
+        updateRequest: TeamEditDTO
     ): Call<Team>
 
-//    @POST("/team/user")
-//    fun addUser(
-//        @Body
-//        addUserRequest: AddUserRequest
-//    ): Call<Boolean>
-//
-//    @DELETE("/team/user")
-//    fun removeUser(
-//        @Body
-//        removeUserRequest: AddUserRequest
-//    ): Call<Boolean>
+    @POST("/team/user")
+    fun addUser(
+        @Body
+        addUserRequest: AddUserRequest
+    ): Call<Boolean>
+
+    @DELETE("/team/user")
+    fun removeUser(
+        @Body
+        removeUserRequest: RemoveUserRequest
+    ): Call<Boolean>
 
     @DELETE("/team/{teamId}")
     fun deleteTeam(

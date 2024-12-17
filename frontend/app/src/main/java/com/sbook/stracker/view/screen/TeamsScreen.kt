@@ -12,7 +12,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.sbook.stracker.dto.team.TeamResponse
+import com.sbook.stracker.dto.team.GetTeamByIdResponse
 import com.sbook.stracker.viewmodel.TeamsViewModel
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -84,7 +84,7 @@ fun TeamsScreen(
 }
 
 @Composable
-fun TeamItem(team: TeamResponse, navigateTo: (route: String) -> Unit) {
+fun TeamItem(team: GetTeamByIdResponse, navigateTo: (route: String) -> Unit) {
     Button(
         onClick = { navigateTo("team/${Json.encodeToString(team)}/tasks") },
     ) {

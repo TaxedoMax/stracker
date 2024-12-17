@@ -6,7 +6,7 @@ import com.sbook.stracker.entity.TaskType
 
 data class TaskDTO(
     val teamId: Long = -1,
-    val ownerId: Long = -1,
+    val authorId: Long = -1,
     val executorId: Long? = null,
     val title: String = "",
     val description: String = "",
@@ -17,7 +17,7 @@ data class TaskDTO(
         return Task(
             id = id,
             teamId = teamId,
-            ownerId = ownerId,
+            authorId = authorId,
             executorId = executorId,
             title = title,
             description = description,

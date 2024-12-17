@@ -2,6 +2,7 @@ package com.sbook.stracker.api
 
 import com.sbook.stracker.dto.user.AuthRequest
 import com.sbook.stracker.dto.user.UserDTO
+import com.sbook.stracker.dto.user.UserListResponse
 import com.sbook.stracker.entity.User
 import retrofit2.Call
 import retrofit2.http.Body
@@ -45,7 +46,7 @@ interface UserApiService {
     fun getUsersByTeamId(
         @Path("teamId")
         teamId: Long,
-    ): Call<List<UserDTO>>
+    ): Call<UserListResponse>
 
     @PUT("/user")
     fun updateUser(

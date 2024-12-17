@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.sbook.stracker.dto.team.TeamResponse
+import com.sbook.stracker.dto.team.GetTeamByIdResponse
 import com.sbook.stracker.entity.Task
 import com.sbook.stracker.repository.TaskRepository
 import dagger.assisted.Assisted
@@ -16,7 +16,7 @@ class TeamTasksViewModel @AssistedInject constructor(
     @Assisted
     val userId: Long,
     @Assisted
-    val team: TeamResponse,
+    val team: GetTeamByIdResponse,
     private val taskRepository: TaskRepository
 ): ViewModel(){
     val tasksList = mutableStateOf<List<Task>>(emptyList())
@@ -35,14 +35,14 @@ class TeamTasksViewModel @AssistedInject constructor(
     }
     @AssistedFactory
     interface Factory{
-        fun create(userId: Long, team: TeamResponse): TeamTasksViewModel
+        fun create(userId: Long, team: GetTeamByIdResponse): TeamTasksViewModel
     }
     @Suppress("UNCHECKED_CAST")
     companion object {
         fun provideFactory(
             assistedFactory: TeamTasksViewModel.Factory,
             userId: Long,
-            team: TeamResponse
+            team: GetTeamByIdResponse
         ): ViewModelProvider.Factory = object : ViewModelProvider.Factory {
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
                 return assistedFactory.create(userId, team) as T

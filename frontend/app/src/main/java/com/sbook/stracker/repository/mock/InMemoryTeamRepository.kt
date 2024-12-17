@@ -1,9 +1,9 @@
 package com.sbook.stracker.repository.mock
 
-import com.sbook.stracker.dto.team.TeamCreateRequest
-import com.sbook.stracker.dto.team.TeamEditRequest
-import com.sbook.stracker.dto.team.TeamGetRequest
-import com.sbook.stracker.dto.team.TeamResponse
+import com.sbook.stracker.dto.team.NewTeamDTO
+import com.sbook.stracker.dto.team.TeamEditDTO
+import com.sbook.stracker.dto.team.GetTeamByIdRequest
+import com.sbook.stracker.dto.team.GetTeamByIdResponse
 import com.sbook.stracker.entity.Team
 import com.sbook.stracker.repository.TeamRepository
 import kotlinx.coroutines.delay
@@ -32,8 +32,8 @@ class InMemoryTeamRepository : TeamRepository {
         return teamUsers[teamId] ?: emptyList()
     }
 
-    override suspend fun getTeamById(teamRequest: TeamGetRequest): Team? = teams.find { it.id == teamRequest.teamId }
-    override suspend fun getTeamsByUserId(id: Long): List<TeamResponse> {
+    override suspend fun getTeamById(teamRequest: GetTeamByIdRequest): Team? = teams.find { it.id == teamRequest.teamId }
+    override suspend fun getTeamsByUserId(id: Long): List<GetTeamByIdResponse> {
         delay(500)
 
         val tmpTeams: ArrayList<Long> = arrayListOf()
@@ -43,7 +43,7 @@ class InMemoryTeamRepository : TeamRepository {
 
         return teams.filter {tmpTeams.contains(it.id)}
             .map{team ->
-                TeamResponse(
+                GetTeamByIdResponse(
                     id = team.id,
                     name = team.name,
                     isUserLead = team.adminId == id
@@ -51,7 +51,7 @@ class InMemoryTeamRepository : TeamRepository {
             }
     }
 
-    override suspend fun createTeam(createTeamDTO: TeamCreateRequest): Boolean {
+    override suspend fun createTeam(createTeamDTO: NewTeamDTO): Boolean {
         val id = (teams.size + 1).toLong()
         val newTeam = Team(
             id = id,
@@ -63,7 +63,7 @@ class InMemoryTeamRepository : TeamRepository {
         return teams.add(newTeam)
     }
 
-    override suspend fun updateTeam(team: TeamEditRequest): Boolean {
+    override suspend fun updateTeam(team: TeamEditDTO): Boolean {
         val index = teams.indexOfFirst { it.id == team.id }
         if (index == -1) return false
         teams[index] = teams[index].copy(name = team.name)

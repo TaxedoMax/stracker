@@ -1,10 +1,10 @@
 package com.sbook.stracker.repository.impl
 
 import com.sbook.stracker.api.RetrofitClient
-import com.sbook.stracker.dto.team.TeamCreateRequest
-import com.sbook.stracker.dto.team.TeamEditRequest
-import com.sbook.stracker.dto.team.TeamGetRequest
-import com.sbook.stracker.dto.team.TeamResponse
+import com.sbook.stracker.dto.team.NewTeamDTO
+import com.sbook.stracker.dto.team.TeamEditDTO
+import com.sbook.stracker.dto.team.GetTeamByIdRequest
+import com.sbook.stracker.dto.team.GetTeamByIdResponse
 import com.sbook.stracker.entity.Team
 import com.sbook.stracker.repository.TeamRepository
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 class TeamRepositoryImpl: TeamRepository {
     private val api = RetrofitClient.teamApiService
-    override suspend fun getTeamById(teamRequest: TeamGetRequest): Team? {
+    override suspend fun getTeamById(teamRequest: GetTeamByIdRequest): Team? {
         return withContext(Dispatchers.IO){
             var response: Team? = null
 
@@ -29,9 +29,9 @@ class TeamRepositoryImpl: TeamRepository {
         }
     }
 
-    override suspend fun getTeamsByUserId(id: Long): List<TeamResponse> {
+    override suspend fun getTeamsByUserId(id: Long): List<GetTeamByIdResponse> {
         return withContext(Dispatchers.IO){
-            var response = emptyList<TeamResponse>()
+            var response = emptyList<GetTeamByIdResponse>()
             try{
                 val request = api.getTeamsByUserId(id).execute()
                 if(request.isSuccessful){
@@ -45,7 +45,7 @@ class TeamRepositoryImpl: TeamRepository {
         }
     }
 
-    override suspend fun createTeam(createTeamDTO: TeamCreateRequest): Boolean {
+    override suspend fun createTeam(createTeamDTO: NewTeamDTO): Boolean {
         return withContext(Dispatchers.IO){
             var response = false
 
@@ -62,7 +62,7 @@ class TeamRepositoryImpl: TeamRepository {
         }
     }
 
-    override suspend fun updateTeam(team: TeamEditRequest): Boolean {
+    override suspend fun updateTeam(team: TeamEditDTO): Boolean {
         return withContext(Dispatchers.IO){
             var response = false
 
