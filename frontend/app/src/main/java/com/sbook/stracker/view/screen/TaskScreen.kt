@@ -25,7 +25,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.sbook.stracker.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -70,7 +69,7 @@ fun TaskScreen(
         ) {
             // Заголовок задачи
             Text(
-                text = viewModel.task.value.title,
+                text = viewModel.task.value.name,
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.fillMaxWidth()
@@ -86,7 +85,7 @@ fun TaskScreen(
             // Логин создателя задачи
             InfoRow(
                 label = "Создатель",
-                value = viewModel.owner.value?.login,
+                value = viewModel.author.value?.login,
                 isLoading = viewModel.isLoading.value
             )
 

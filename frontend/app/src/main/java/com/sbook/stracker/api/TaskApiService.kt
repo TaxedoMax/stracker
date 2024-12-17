@@ -1,40 +1,47 @@
 package com.sbook.stracker.api
 
-import com.sbook.stracker.dto.TaskDTO
+import com.sbook.stracker.dto.task.TaskDTO
+import com.sbook.stracker.dto.task.TaskUpdateRequest
 import com.sbook.stracker.entity.Task
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
 
 interface TaskApiService {
-    @GET("/task/{taskId}")
+    @GET("task/{taskId}")
     fun getTaskById(
         @Path("taskId")
         taskId: Long,
     ): Call<Task>
 
-    @GET("/task/team/{teamId}")
+    @GET("task/team/{teamId}")
     fun getTasksByTeamId(
         @Path("teamId")
         teamId: Long,
     ): Call<List<Task>>
 
-    @GET("/user/{userId}/tasks")
+    @GET("user/{userId}/tasks")
     fun getTasksByUserId(
         @Path("userId")
         userId: Long
     ): Call<List<Task>>
 
-    @POST("/task")
+    @POST("task")
     fun createTask(
         @Body
         task: TaskDTO
     ): Call<Task>
 
-    @DELETE("/task/{taskId}")
+    @PUT("task")
+    fun updateTask(
+        @Body
+        task: TaskUpdateRequest,
+    ): Call<Task>
+    @DELETE("task/{taskId}")
     fun deleteTask(
         @Path("taskId")
         taskId: Long,

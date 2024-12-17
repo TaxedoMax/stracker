@@ -12,16 +12,19 @@ import kotlinx.coroutines.withContext
 
 class TeamRepositoryImpl: TeamRepository {
     private val api = RetrofitClient.teamApiService
-    override suspend fun getTeamById(teamRequest: GetTeamByIdRequest): Team? {
+    override suspend fun getTeamById(teamRequest: GetTeamByIdRequest): GetTeamByIdResponse? {
         return withContext(Dispatchers.IO){
-            var response: Team? = null
+            var response: GetTeamByIdResponse? = null
 
             try{
-                val request = api.getTeam(teamRequest.userId, teamRequest.teamId).execute()
+                val request = api.getTeam(teamRequest).execute()
                 if(request.isSuccessful){
                     response = request.body()
+                } else{
+
                 }
             } catch (ex: Exception){
+
                 response = null
             }
 
@@ -35,7 +38,8 @@ class TeamRepositoryImpl: TeamRepository {
             try{
                 val request = api.getTeamsByUserId(id).execute()
                 if(request.isSuccessful){
-                    response = request.body() ?: emptyList()
+                    response = request.body()?.teams
+                        ?.map{teamItem -> teamItem.toTeamResponse() } ?: emptyList()
                 }
             } catch (ex: Exception){
                 response = emptyList()

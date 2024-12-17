@@ -35,7 +35,7 @@ fun TaskItem(task: Task, userId: Long, navigateTo: (route: String) -> Unit) {
                     .padding(16.dp)
                     .weight(1F),
             ) {
-                Text(text = task.title, style = MaterialTheme.typography.bodyLarge)
+                Text(text = task.name, style = MaterialTheme.typography.bodyLarge)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(text = task.type.text, style = MaterialTheme.typography.labelMedium)
                 Spacer(modifier = Modifier.height(4.dp))

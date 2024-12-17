@@ -32,7 +32,10 @@ class InMemoryTeamRepository : TeamRepository {
         return teamUsers[teamId] ?: emptyList()
     }
 
-    override suspend fun getTeamById(teamRequest: GetTeamByIdRequest): Team? = teams.find { it.id == teamRequest.teamId }
+    override suspend fun getTeamById(teamRequest: GetTeamByIdRequest): GetTeamByIdResponse? {
+        TODO()
+        //return teams.find { it.id == teamRequest.teamId }
+    }
     override suspend fun getTeamsByUserId(id: Long): List<GetTeamByIdResponse> {
         delay(500)
 

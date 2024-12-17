@@ -3,6 +3,7 @@ package com.sbook.stracker.view.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.*
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
@@ -85,8 +86,8 @@ fun ProfileScreen(
 
                 // Список задач пользователя
                 LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                    items(userTasks.size) { index ->
-                        TaskItem(task = userTasks[index], userId = user!!.id, navigateTo = navigateTo)
+                    items(userTasks) { task ->
+                        TaskItem(task = task, userId = userViewModel.userId, navigateTo = navigateTo)
                     }
                 }
             }

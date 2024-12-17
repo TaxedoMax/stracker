@@ -7,7 +7,7 @@ import com.sbook.stracker.dto.team.GetTeamByIdResponse
 import com.sbook.stracker.entity.Team
 
 interface TeamRepository {
-    suspend fun getTeamById(teamRequest: GetTeamByIdRequest): Team?
+    suspend fun getTeamById(teamRequest: GetTeamByIdRequest): GetTeamByIdResponse?
     suspend fun getTeamsByUserId(id: Long): List<GetTeamByIdResponse>
     suspend fun createTeam(createTeamDTO: NewTeamDTO): Boolean
     suspend fun updateTeam(team: TeamEditDTO): Boolean

@@ -32,7 +32,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.sbook.stracker.entity.TaskType
 import com.sbook.stracker.viewmodel.TaskViewModel
 
@@ -79,7 +78,7 @@ fun TaskEditScreen(
         ) {
             // Поле для ввода названия
             TextField(
-                value = task.title,
+                value = task.name,
                 onValueChange = {newTitle -> viewModel.onTitleChanged(newTitle) },
                 label = { Text("Название") },
                 singleLine = true,

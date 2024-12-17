@@ -4,7 +4,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
-import com.sbook.stracker.dto.TaskDTO
+import com.sbook.stracker.dto.task.TaskDTO
 import com.sbook.stracker.dto.team.GetTeamByIdRequest
 import com.sbook.stracker.dto.team.GetTeamByIdResponse
 import com.sbook.stracker.dto.user.UserDTO
@@ -35,9 +35,9 @@ class TaskViewModel @AssistedInject constructor(
     val isLoading = mutableStateOf(false)
 
     val task = mutableStateOf(TaskDTO())
-    val owner = mutableStateOf<UserDTO?>(null)
+    val author = mutableStateOf<UserDTO?>(null)
     val executor = mutableStateOf<UserDTO?>(null)
-    val team = mutableStateOf<Team?>(null)
+    val team = mutableStateOf<GetTeamByIdResponse?>(null)
 
     val isTypeExpanded = mutableStateOf(false)
     val isStatusExpanded = mutableStateOf(false)
@@ -61,7 +61,7 @@ class TaskViewModel @AssistedInject constructor(
                             teamId = task.value.teamId
                         )
                     )
-                    owner.value = userRepository.getUserById(task.value.authorId)
+                    author.value = userRepository.getUserById(task.value.authorId)
                     if(task.value.executorId != null){
                         executor.value = userRepository.getUserById(task.value.executorId!!)
                     } else{
@@ -87,7 +87,7 @@ class TaskViewModel @AssistedInject constructor(
         }
     }
     fun onTitleChanged(newTitle: String){
-        task.value = task.value.copy(title = newTitle)
+        task.value = task.value.copy(name = newTitle)
     }
     fun onDescriptionChanged(newDescription: String){
         task.value = task.value.copy(description = newDescription)
@@ -106,9 +106,11 @@ class TaskViewModel @AssistedInject constructor(
     private fun createTask(navigateBack: () -> Unit){
         viewModelScope.launch {
             isLoading.value = true
-            if(task.value.title.isNotEmpty() && task.value.description.isNotEmpty()){
-                taskRepository.addTask(task.value)
-                navigateBack()
+            if(task.value.name.isNotEmpty() && task.value.description.isNotEmpty()){
+                if(taskRepository.createTask(task.value)) navigateBack()
+                else{
+
+                }
             } else {
                 TODO()
             }
@@ -119,7 +121,8 @@ class TaskViewModel @AssistedInject constructor(
         viewModelScope.launch{
             isLoading.value = true
             task.value = task.value.copy(executorId = userId)
-            taskRepository.updateTask(task.value.toTask(taskId!!))
+            val login = userRepository.getUserById(userId)?.login
+            taskRepository.updateTask(task.value.toTaskUpdateRequest(taskId!!, userId, login))
             loadData()
             isLoading.value = false
         }
@@ -128,7 +131,7 @@ class TaskViewModel @AssistedInject constructor(
         viewModelScope.launch{
             isLoading.value = true
             task.value = task.value.copy(executorId = null)
-            taskRepository.updateTask(task.value.toTask(taskId!!))
+            taskRepository.updateTask(task.value.toTaskUpdateRequest(taskId!!, userId, null))
             loadData()
             isLoading.value = false
         }
@@ -136,8 +139,9 @@ class TaskViewModel @AssistedInject constructor(
     private fun updateTask(navigateBack: () -> Unit) {
         viewModelScope.launch {
             isLoading.value = true
-            if(task.value.title.isNotEmpty() && task.value.description.isNotEmpty()){
-                taskRepository.updateTask(task.value.toTask(taskId!!))
+            if(task.value.name.isNotEmpty() && task.value.description.isNotEmpty()){
+                val login = userRepository.getUserById(task.value.executorId!!)?.login
+                taskRepository.updateTask(task.value.toTaskUpdateRequest(taskId!!, userId, login))
                 navigateBack()
             } else{
                 TODO()

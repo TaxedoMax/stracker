@@ -51,9 +51,11 @@ class TeamEditViewModel @AssistedInject constructor(
                     teamId = teamId!!
                 )
             )
+
             name.value = team!!.name
 
             usersList.value = userRepository.getUsersByTeam(teamId)
+
             isDataLoading.value = false
         }
     }

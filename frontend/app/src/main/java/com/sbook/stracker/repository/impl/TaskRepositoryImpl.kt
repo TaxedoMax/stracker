@@ -1,7 +1,8 @@
 package com.sbook.stracker.repository.impl
 
 import com.sbook.stracker.api.RetrofitClient
-import com.sbook.stracker.dto.TaskDTO
+import com.sbook.stracker.dto.task.TaskDTO
+import com.sbook.stracker.dto.task.TaskUpdateRequest
 import com.sbook.stracker.entity.Task
 import com.sbook.stracker.repository.TaskRepository
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +35,8 @@ class TaskRepositoryImpl : TaskRepository{
                 val request = api.getTasksByUserId(userId).execute()
                 if(request.isSuccessful){
                     response = request.body() ?: emptyList()
+                } else{
+
                 }
             } catch (ex: Exception){
                 response = emptyList()
@@ -60,13 +63,15 @@ class TaskRepositoryImpl : TaskRepository{
         }
     }
 
-    override suspend fun addTask(task: TaskDTO): Boolean {
+    override suspend fun createTask(task: TaskDTO): Boolean {
         return withContext(Dispatchers.IO){
             var response = false
             try {
                 val request = api.createTask(task).execute()
                 if(request.isSuccessful){
-                    response = request.body() ?: false
+                    response = request.body()?.id != null
+                } else{
+
                 }
             } catch (ex: Exception){
                 response = false
@@ -75,13 +80,15 @@ class TaskRepositoryImpl : TaskRepository{
         }
     }
 
-    override suspend fun updateTask(task: Task): Boolean {
+    override suspend fun updateTask(task: TaskUpdateRequest): Boolean {
         return withContext(Dispatchers.IO){
             var response = false
             try {
-                val request = api.createTask(task.toTaskDTO()).execute()
+                val request = api.updateTask(task).execute()
                 if(request.isSuccessful){
-                    response = request.body() ?: false
+                    response = request.body()?.id == task.taskId
+                } else{
+
                 }
             } catch (ex: Exception){
                 response = false

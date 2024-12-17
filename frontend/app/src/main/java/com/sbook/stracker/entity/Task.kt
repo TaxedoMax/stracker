@@ -1,7 +1,6 @@
 package com.sbook.stracker.entity
 
-import com.sbook.stracker.dto.TaskDTO
-import kotlinx.serialization.SerialName
+import com.sbook.stracker.dto.task.TaskDTO
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -10,8 +9,7 @@ data class Task(
     val teamId: Long,
     val authorId: Long,
     val executorId: Long?,
-    @SerialName("name")
-    val title: String,
+    val name: String,
     val description: String,
     val status: TaskStatus,
     val type: TaskType,
@@ -21,7 +19,7 @@ data class Task(
             teamId = teamId,
             authorId = authorId,
             executorId = executorId,
-            title = title,
+            name = name,
             description = description,
             status = status,
             type = type,
@@ -38,7 +36,7 @@ enum class TaskStatus(val text: String){
 }
 
 enum class TaskType(val text: String){
-    HANDMADE("Не придумал"),
+    HANDMADE("Рукоделие"),
     BUYING("Покупка"),
     CREATION("Создание"),
     TASK("Задача"),

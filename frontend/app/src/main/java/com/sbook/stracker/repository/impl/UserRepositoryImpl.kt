@@ -18,8 +18,7 @@ class UserRepositoryImpl : UserRepository {
             try{
                 val request = api.register(authDTO).execute()
                 if(request.isSuccessful){
-                    val dto = request.body()
-                    response = dto?.id ?: -1L
+                    response = request.body() ?: -1L
                 }
             } catch (ex: Exception){
                 response = -1L
@@ -34,14 +33,17 @@ class UserRepositoryImpl : UserRepository {
             var response = -1L
 
             try{
-                val request = api.login(authDTO.login).execute()
-                if(request.isSuccessful){
-                    response = request.body() ?: 1L
+                val request = api.tryLogin(authDTO).execute()
+                if(request.isSuccessful && request.body() == true){
+                    val getIdRequest = api.getUserByLogin(authDTO.login).execute()
+                    if(getIdRequest.isSuccessful){
+                        response = getIdRequest.body()?.id ?: -1L
+                    }
                 } else{
-                    response = 1L
+                    response = -1L
                 }
             } catch (ex: Exception){
-                response = 1L
+                response = -1L
             }
 
             response
@@ -55,7 +57,7 @@ class UserRepositoryImpl : UserRepository {
             try{
                 val request = api.getUsersByTeamId(teamId).execute()
                 if(request.isSuccessful){
-                    response = request.body() ?: emptyList()
+                    response = request.body()?.users ?: emptyList()
                 }
             } catch (ex: Exception){
                 response = emptyList()
@@ -72,6 +74,8 @@ class UserRepositoryImpl : UserRepository {
                 val request = api.getUserById(id).execute()
                 if(request.isSuccessful){
                     response = request.body()
+                } else{
+
                 }
             } catch (ex: Exception){
                 response = null

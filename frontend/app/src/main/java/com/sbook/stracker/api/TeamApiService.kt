@@ -1,5 +1,7 @@
 package com.sbook.stracker.api
 
+import com.sbook.stracker.dto.team.GetTeamByIdRequest
+import com.sbook.stracker.dto.team.GetTeamByIdResponse
 import com.sbook.stracker.dto.team.NewTeamDTO
 import com.sbook.stracker.dto.team.TeamEditDTO
 import com.sbook.stracker.dto.team.TeamListResponse
@@ -22,39 +24,37 @@ interface TeamApiService {
         userId: Long,
     ): Call<TeamListResponse>
 
-    @GET("/team")
+    @GET("team")
     fun getTeam(
-        @Query("userId")
-        userId: Long,
-        @Query("teamId")
-        teamId: Long,
-    ): Call<Team>
+        @Body
+        getTeamRequest: GetTeamByIdRequest
+    ): Call<GetTeamByIdResponse>
 
-    @POST("/team")
+    @POST("team")
     fun createTeam(
         @Body
         createRequest: NewTeamDTO
     ): Call<Team>
 
-    @PUT("/team")
+    @PUT("team")
     fun updateTeam(
         @Body
         updateRequest: TeamEditDTO
     ): Call<Team>
 
-    @POST("/team/user")
+    @POST("team/user")
     fun addUser(
         @Body
         addUserRequest: AddUserRequest
     ): Call<Boolean>
 
-    @DELETE("/team/user")
+    @DELETE("team/user")
     fun removeUser(
         @Body
         removeUserRequest: RemoveUserRequest
     ): Call<Boolean>
 
-    @DELETE("/team/{teamId}")
+    @DELETE("team/{teamId}")
     fun deleteTeam(
         @Path("teamId")
         teamId: Long,
