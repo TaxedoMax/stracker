@@ -1,6 +1,10 @@
 package com.sbook.stracker.view.screen
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,9 +13,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,8 +31,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
+import com.sbook.stracker.entity.TaskStatus
+import com.sbook.stracker.entity.TaskType
 import com.sbook.stracker.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,37 +89,81 @@ fun TaskScreen(
             // Тип задачи
             InfoRow(
                 label = "Тип задачи",
-                value = viewModel.task.value.type.text,
-                isLoading = viewModel.isLoading.value
+                textValue = viewModel.task.value.type.text,
+                isLoading = viewModel.isLoading.value,
+                isText = true,
             )
 
             // Логин создателя задачи
             InfoRow(
                 label = "Создатель",
-                value = viewModel.owner.value?.login,
-                isLoading = viewModel.isLoading.value
+                textValue = viewModel.owner.value?.login,
+                isLoading = viewModel.isLoading.value,
+                isText = true,
             )
 
             // Логин исполнителя задачи
             InfoRow(
                 label = "Исполнитель",
-                value = viewModel.executor.value?.login,
-                isLoading = viewModel.isLoading.value
+                textValue = viewModel.executor.value?.login,
+                isLoading = viewModel.isLoading.value,
+                isText = true,
             )
 
             // Статус задачи
             InfoRow(
                 label = "Статус",
-                value = viewModel.task.value.status.text,
-                isLoading = viewModel.isLoading.value
+                textValue = viewModel.task.value.status.text,
+                composableValue = {
+                    Box(
+                        modifier = Modifier
+                            .clickable { viewModel.isStatusExpanded.value = true }
+                            .border(
+                                BorderStroke(1.dp, MaterialTheme.colorScheme.primary),
+                                MaterialTheme.shapes.medium
+                            )
+                            .padding(16.dp),
+                    ) {
+                        Row(
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                        ){
+                            Text(viewModel.task.value.status.text)
+                            Icon(
+                                imageVector = Icons.Default.ArrowDropDown,
+                                contentDescription = "Иконка выпадающего окна"
+                            )
+                        }
+
+                        DropdownMenu(
+                            expanded = viewModel.isStatusExpanded.value,
+                            onDismissRequest = { viewModel.isStatusExpanded.value = false },
+                        ) {
+                            TaskStatus.entries.forEach { status ->
+                                DropdownMenuItem(
+                                    text = { Text(status.text) },
+                                    onClick = {
+                                        viewModel.onStatusChanged(status)
+                                        viewModel.isStatusExpanded.value = false
+                                    },
+                                    enabled = !viewModel.isLoading.value
+                                )
+                            }
+                        }
+                    }
+                },
+                isLoading = viewModel.isLoading.value,
+                isText = false,
             )
 
             // Описание задачи
             Text(
                 text = "Описание",
-                style = MaterialTheme.typography.bodyMedium,
+                style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.padding(top = 8.dp)
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .fillMaxWidth(),
+                textAlign = TextAlign.Left,
             )
             Text(
                 text = viewModel.task.value.description,
@@ -139,21 +193,32 @@ fun TaskScreen(
 }
 
 @Composable
-fun InfoRow(label: String, value: String?, isLoading: Boolean) {
+fun InfoRow(
+    label: String,
+    textValue: String?,
+    composableValue: @Composable ()->Unit = {},
+    isText: Boolean,
+    isLoading: Boolean,
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = label,
-            style = MaterialTheme.typography.bodySmall,
+            style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold
         )
-        Text(
-            text = if(isLoading && value == null) "Загрузка.." else value ?: "Не указано",
-            style = MaterialTheme.typography.bodySmall
-        )
+        if(isText){
+            Text(
+                text = if(isLoading && textValue == null) "Загрузка.." else textValue ?: "Не указано",
+                style = MaterialTheme.typography.bodyMedium
+            )
+        } else{
+            composableValue()
+        }
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -21,11 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import com.sbook.stracker.R
+import com.sbook.stracker.ui.theme.LightBlue
 import com.sbook.stracker.ui.theme.STrackerTheme
+import com.sbook.stracker.view.widget.MinimalistTextField
 import com.sbook.stracker.viewmodel.AuthViewModel
 import com.sbook.stracker.viewmodel.UserViewModel
 
@@ -58,19 +58,19 @@ fun LoginScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
+        MinimalistTextField(
             value = login,
             onValueChange = { authViewModel.onLoginChanged(it) },
-            label = { Text("Логин") },
+            label = "Логин",
             singleLine = true
         )
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextField(
+        MinimalistTextField(
             value = password,
             onValueChange = { authViewModel.onPasswordChanged(it) },
-            label = { Text("Пароль") },
+            label = "Пароль",
             singleLine = true,
             visualTransformation = PasswordVisualTransformation()
         )
@@ -87,7 +87,12 @@ fun LoginScreen(
         }
 
         Spacer(modifier = Modifier.height(16.dp))
-        TextButton(onClick = { navigateTo("register") }) {
+        TextButton(
+            onClick = { navigateTo("register") },
+            colors = ButtonDefaults.textButtonColors(
+                contentColor = LightBlue
+            )
+        ) {
             Text(text = "Нет аккаунта? Зарегистрироваться")
         }
     }

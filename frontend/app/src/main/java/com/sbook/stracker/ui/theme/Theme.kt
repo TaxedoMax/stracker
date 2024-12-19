@@ -16,53 +16,41 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+val DarkColorScheme = darkColorScheme(
+    primary = Blue,
+    onPrimary = Color.White,
+    secondary = LightBlue,
+    onSecondary = Color.Black,
+    background = DarkBlue,
+    onBackground = Color.White,
+    surface = DarkBlue,
+    onSurface = Color.White
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = DarkBlue,
-    secondary = Blue,
-    tertiary = LightBlue,
+val LightColorScheme = lightColorScheme(
+    primary = Blue,
+    onPrimary = Color.White,
+    secondary = LightBlue,
+    onSecondary = Color.Black,
     background = Color.White,
-//    surface = Color(0xFFFFFBFE),
-//    onPrimary = Color.White,
-//    onSecondary = Color.White,
-//    onTertiary = Color.White,
-//    onBackground = Color(0xFF1C1B1F),
-//    onSurface = Color(0xFF1C1B1F),
-
+    onBackground = Color.Black,
+    surface = Color.White,
+    onSurface = Color.Black
 )
 
 @Composable
 fun STrackerTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-//        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-//            val context = LocalContext.current
-//            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-//        }
-
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
-    }
-    val view = LocalView.current
-    if (!view.isInEditMode) {
-        SideEffect {
-            val window = (view.context as Activity).window
-            window.statusBarColor = colorScheme.primary.toArgb()
-            WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = darkTheme
-        }
+    val colors = if (darkTheme) {
+        DarkColorScheme
+    } else {
+        LightColorScheme
     }
 
     MaterialTheme(
-        colorScheme = colorScheme,
+        colorScheme = colors,
         typography = Typography,
         content = content
     )

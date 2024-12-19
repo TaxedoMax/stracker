@@ -26,6 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -34,6 +35,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.sbook.stracker.entity.TaskType
+import com.sbook.stracker.ui.theme.Blue
+import com.sbook.stracker.ui.theme.LightBlue
 import com.sbook.stracker.viewmodel.TaskViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -84,6 +87,13 @@ fun TaskEditScreen(
                 label = { Text("Название") },
                 singleLine = true,
                 enabled = !viewModel.isLoading.value,
+                colors = TextFieldDefaults.colors(
+                    cursorColor = LightBlue,
+                    focusedPlaceholderColor = LightBlue.copy(alpha = 0.7f),
+                    focusedContainerColor = Blue,
+                    unfocusedContainerColor = LightBlue.copy(alpha = 0.7f),
+                    focusedLabelColor = LightBlue,
+                ),
             )
 
             // Поле для ввода описания
@@ -94,6 +104,13 @@ fun TaskEditScreen(
                 modifier = Modifier.fillMaxWidth(),
                 maxLines = 5,
                 enabled = !viewModel.isLoading.value,
+                colors = TextFieldDefaults.colors(
+                    cursorColor = LightBlue,
+                    focusedPlaceholderColor = LightBlue.copy(alpha = 0.7f),
+                    focusedContainerColor = Blue,
+                    unfocusedContainerColor = LightBlue.copy(alpha = 0.7f),
+                    focusedLabelColor = LightBlue,
+                ),
             )
 
             // Поле с выбором типа задачи

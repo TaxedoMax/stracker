@@ -27,15 +27,15 @@ data class Task(
 
 enum class TaskStatus(val text: String){
     OPEN("Открытая"),
-    CLOSE("Закрытая"),
+    CLOSE("Завершена"),
     IN_PROGRESS("В процессе"),
     NEED_INFORMATION("Требуется информация"),
     ON_CHECK("На проверке"),
 }
 
 enum class TaskType(val text: String){
-    HANDMADE("Хз, рукодельная"),
+    HANDMADE("Домашняя обязанность"),
     BUYING("Покупка"),
-    CREATION("Сотворение"),
+    CREATION("Создание"),
     TASK("Задача"),
 }

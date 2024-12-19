@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardColors
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.sbook.stracker.entity.Task
+import com.sbook.stracker.ui.theme.Blue
+import com.sbook.stracker.ui.theme.LightBlue
 
 @Composable
 fun TaskItem(task: Task, userId: String, navigateTo: (route: String) -> Unit) {
@@ -28,8 +32,10 @@ fun TaskItem(task: Task, userId: String, navigateTo: (route: String) -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 8.dp)
-            .clickable { navigateTo("task/${task.id}") }
-        ,
+            .clickable { navigateTo("task/${task.id}") },
+        colors = CardDefaults.cardColors(
+            containerColor = Blue,
+        )
     ) {
         Row (verticalAlignment = Alignment.CenterVertically){
             Column(
