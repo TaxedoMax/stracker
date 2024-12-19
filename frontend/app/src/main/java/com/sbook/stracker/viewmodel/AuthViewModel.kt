@@ -4,9 +4,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.sbook.stracker.dto.user.AuthRequest
 import com.sbook.stracker.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -29,26 +31,30 @@ class AuthViewModel @Inject constructor(
     }
 
     fun loginUser(userViewModel: UserViewModel, navigateTo: (route: String) -> Unit) {
-        val authDTO = AuthRequest(login = login, password = password)
+        viewModelScope.launch {
+            val authDTO = AuthRequest(login = login, password = password)
 
-        val userId = userRepository.login(authDTO)
-        if (userId != "-1") {
-            userViewModel.setUserId(userId)
-            navigateTo("teams")
-        } else {
-            errorMessage = "Неверный логин или пароль"
+            val userId = userRepository.login(authDTO)
+            if (userId != "-1") {
+                userViewModel.setUserId(userId)
+                navigateTo("teams")
+            } else {
+                errorMessage = "Неверный логин или пароль"
+            }
         }
     }
 
     fun registerUser(userViewModel: UserViewModel, navigateTo: (route: String) -> Unit) {
-        val authDTO = AuthRequest(login = login, password = password)
-        val userId = userRepository.register(authDTO)
+        viewModelScope.launch {
+            val authDTO = AuthRequest(login = login, password = password)
+            val userId = userRepository.register(authDTO)
 
-        if (userId != "-1") {
-            userViewModel.setUserId(userId)
-            navigateTo("teams")
-        } else {
-            errorMessage = "Пользователь уже существует"
+            if (userId != "-1") {
+                userViewModel.setUserId(userId)
+                navigateTo("teams")
+            } else {
+                errorMessage = "Пользователь уже существует"
+            }
         }
     }
 }
